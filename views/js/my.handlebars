@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="../js/jquery.min.js"></script>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="../css/main.css" rel="stylesheet" type="text/css">
+
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link href="../css/main.css" rel="stylesheet" type="text/css"> -->
+
+  {{!-- <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"> --}}
+  {{!-- <link href="../css/main.css" rel="stylesheet" type="text/css"> --}}
+  <title>YoutubeToText</title>
+</head>
+
+<body class="dark-theme || light-theme">
+  
+  <!-- Navigation -->
+  <!-- https://stackoverflow.com/questions/66614050/auto-close-navbar-when-click-on-link-responsive-mode -->
+  <!-- https://stackoverflow.com/questions/42401606/how-to-hide-collapsible-bootstrap-navbar-on-click -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top sticky">
+    <div class="container">
+      <a class="navbar-brand" href="../index.html">YoutubeToText</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a class="nav-link" href="#main-container">URL SEARCH
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a class="nav-link" href="#video-search">VIDEO SEARCH</a>
+          </li>
+         <li class="nav-item active" data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a class="nav-link" href="#transcription">TRANSCRIPTION</a>
+          </li>
+          <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a class="nav-link" href="#faq">FAQ</a>
+          </li>
+          {{!-- <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a class="nav-link" onclick="toggleTheme()" id="toggleTheme">Toggle Dark Mode</a>
+          </li> --}}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container text-center mt-5 mb-3" id="main-container">
+      <div class="text-center mb-5 pb-5">
+        <form enctype="application/json" action="/ytt" method="post" class="pt-5" id="form">
+          <!-- <h2>Enter a Youtube video URL</h2> -->
+          <div class="form-group mt-3 mb-0">
+            <!-- 
+              <input id="url-search-input" class="form-control mt-3" type="url" name="url" 
+              placeholder="URL SEARCH:  enter a Youtube video URL" pattern="https://.*" required> 
+            -->
+            {{!-- pattern="https://(www\.)?youtu.*"  --}}
+            <input 
+              id="url-search-input" class="form-control mt-3" type="url" name="url" 
+              placeholder="URL SEARCH:  enter a Youtube video URL" pattern="https://(www)?(\.)?(m\.)?youtu.*" 
+            required>
+            <button id="submit-btn" type="submit" class="btn btn-danger btn-block mt-1">Submit</button>
+          </div>
+          <p class="text-muted" id="cre-text-muted">Copy & Paste a youtube video URL and then read the video !</p>
+        </form>
+
+        <div id="video-search"></div>
+        <form enctype="application/json" action="/ytt" method="get" class="pt-5" id="search-form">
+          <!-- <h2>Search for Youtube videos</h2> -->
+          <div class="form-group mt-3 mb-0">
+            <input id="search-input" class="form-control mt-3" type="text" name="q" placeholder="VIDEO SEARCH: enter search keywords" required>
+            <button id="submit-btn" type="submit" class="btn btn-info btn-block mt-1">Submit</button>
+          </div>
+          <p class="text-muted" id="cre-text-muted">Search for Youtube videos and then read the video !</p>
+        </form>
+      </div>
+     
+      <div id="transcription"></div> {{!-- anchor for #transcripted --}}
+      <div id="transcripted" class="mt-5 pt-5" style="padding-top: 10px;">
+        <div id="results" class="mb-5">
+          <div class="container">
+            <div class="tr_accordion" id="accordionTranscriptedResults">
+              <div class="card">
+                <div class="card-header" id="tr_headingOne">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#tr_collapseOne" aria-expanded="true" aria-controls="tr_collapseOne">
+                      TRANSCRIPTION 
+                    </button>
+                  </h2>
+                </div>
+            
+                <div id="tr_collapseOne" class="collapse show" aria-labelledby="tr_headingOne" data-parent="#accordionTranscriptedResults">
+                  <div class="card-body">
+                    {{#this}}
+                      {{!-- <p>{{_id}}</p> --}}
+                      <div id="video">
+                          <iframe width="640" height="360" src="https://www.youtube.com/embed/{{videoId}}"  frameborder="0"></iframe>
+                      </div>
+                      <div class="mt-0 mb-5 text-center">
+                        <p style="font-size:1.9vw">URL :  <a href="{{url}}" target="_blank">{{url}}</a></p>
+                      </div>
+                      <textarea id="ta" name="ta" style="display:none;">{{title}}</textarea>
+                      <p id="title" style="color: #f6e9e9;"><strong></strong></p>
+                        {{#each captionTracks}}
+                          {{!-- {{@index}} {{this}} --}}
+                          <div style="padding: 6px">
+                            <button id="{{this.languageCode}}_{{this.kind}}" onclick="manageScript()" kind="{{this.kind}}">{{this.name}}</button>
+                            <p id="script_{{this.languageCode}}_{{this.kind}}" class="hideScript" kind="{{this.kind}}">{{this.script}}</p>
+                          </div>
+                          
+                        {{/each}}
+                    {{/this}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header" id="tr_headingTwo">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#tr_collapseTwo" aria-expanded="true" aria-controls="tr_collapseTwo">
+                      WORD CLOUD 
+                    </button>
+                  </h2>
+                </div>
+            
+                <div id="tr_collapseTwo" class="collapse" aria-labelledby="tr_headingTwo" data-parent="#accordionTranscriptedResults">
+                  <div class="card-body">
+                     {{#each captionTracks}}
+                          {{!-- {{@index}} {{this}} --}}
+                          <div style="padding: 6px">
+                            <button id="{{this.languageCode}}_{{this.kind}}" onclick="manageWrodcloud()" kind="{{this.kind}}">{{this.name}}</button>
+                            {{!-- <div class="container text-center"><div id="lds-dual-ring_{{this.languageCode}}_{{this.kind}}" class="lds-dual-ring pt-3"></div></div> --}}
+                            <div id="lds-dual-ring_{{this.languageCode}}_{{this.kind}}" class="lds-dual-ring pt-4"></div>
+                            <div id="wc_{{this.languageCode}}_{{this.kind}}" class="svg-container text-center"></div> 
+                          </div>
+                      {{/each}}
+                     
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- https://getbootstrap.com/docs/4.3/components/collapse/ -->
+      <!-- https://www.w3schools.com/bootstrap4/tryit.asp?filename=trybs_collapsible_accordion&stacked=h -->
+      <div class="pb-5" id="faq"></div>
+      <div class="mt-3 pb-5" id="faq-container">
+      
+        <div class="accordion" id="accordionExample">
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  What is YoutubeToText and how does it work ? 
+                </button>
+              </h2>
+            </div>
+        
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+              <div class="card-body">
+                <p><a href="https://youtubetotext.online"><b>YoutubeToText</b></a> is a service that you can read Youtube video transcript.<br>
+                  All you have to do is to get and copy Youtube video URL/address.
+                </p>
+                <p>&#9728; If you've already copied a Youtube video URL, paste it into the <a href="#main-container" style="color: #dc3545;"><b>URL SEARCH</b></a> form.</p>	
+                <p>&#128270; If you wanna search for Youtube videos first, 
+                  do so using <a href="#video-search" style="color: #17a2b8;"><b>VIDEO SEARCH</b></a> form.<br>
+                  You then simply copy video URL and paste it into the the <a href="#main-container" style="color: #dc3545;"><b>URL SEARCH</b></a> form.
+                </p>
+                <p>Otherwise, just get a video URL from <a href="https://www.youtube.com/" target="_blank">youtube.com</a>, paste it into the <a href="#main-container" style="color: #dc3545;"><b>URL SEARCH</b></a> form.</p>	
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="headingTwo">
+              <h2 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  I don't know how to copy video URL/address.
+                </button>
+              </h2>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+              <div class="card-body">
+                <p>PC/desk-top: right-click on a video and click <b>copy video URL</b>.</p>
+                <p>
+                  mobile: press a video for one second and select <b>copy video URL</b>.<br>
+                  Alternatively, find and touch <b style="font-size: 20px; font-weight:bold;">&#8942;</b> on the top-right conner of video, <b>Share</b>, and <b>Copy link</b>. 
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="headingThree">
+              <h2 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  I can't see any transcript after entering a Youtube URL.
+                </button>
+              </h2>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+              <div class="card-body">
+                <!-- <p>There can be one of the following reasons:</p> -->
+                <p>Youtube vidoes that don't have subtitles/closed captions by default won't show any transcript result.</p>
+                <!-- <p>Youtube vidoes whose subtitles/closed captions are (by default) disabled won't show any transcript result.</p> -->
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="headingFour">
+              <h2 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                  I wanna get transcript with my language.
+                </button>
+              </h2>
+            </div>
+            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
+              <div class="card-body">
+                <p>If a Youtube video you wanna read provides subtitles/closed captions, <br>
+                  the resulting transcript will be based either on the registered language(s) or on auto-generated caption.
+                </p> 
+                {{!-- need to wait for data in transcripted to be loaded.. --}}
+                <p>Please have a look at <a href="../index.html#sample"><b>sample</b></a> :)</p>
+                {{!-- <p>Please have a look at <a onclick="loadSample()" href="#"><b>sample</b></a> :)</p> --}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+  </div>
+
+  <footer class="footer">
+    <div class="container text-center">
+      <span class="text-muted">&copy; 2021 
+        <a href="https://www.youtubetotext.online/">YoutubeToText</a>
+      </span> |
+      <span><a href="mailto:hello@youtubetotext.online">email</a></span>
+      <!-- <span style="font-size: 30px"><a href="mailto:hello@youtubetotext.online">&#9993;</a></span> -->
+    </div>
+  </footer>
+
+  {{!-- <script src="../js/jquery.min.js"></script> --}}
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="../js/d3.layout.cloud.js"></script>
+  <script type="text/javascript" 
+    src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min.js" 
+    integrity="sha512-ZuOjyqq409+q6uc49UiBF3fTeyRyP8Qs0Jf/7FxH5LfhqBMzrR5cwbpDA4BgzSo884w6q/+oNdIeHenOqhISGw==" 
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer">
+  </script>
+  <script src="../js/my.js"></script>
+
+</body>
+
+</html>

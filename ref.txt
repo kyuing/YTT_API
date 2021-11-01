@@ -1,0 +1,27 @@
+https://stackoverflow.com/questions/59753149/express-handlebars-wont-render-data
+https://stackoverflow.com/questions/19667900/check-if-a-document-exists-in-mongoose-node-js/19669236
+https://stackoverflow.com/questions/27482806/check-if-id-exists-in-a-collection-with-mongoose
+https://stackoverflow.com/questions/48767712/receiving-promise-pending-back-from-then
+https://stackoverflow.com/questions/53675977/then-is-called-before-async-function-returns-a-value
+https://stackoverflow.com/questions/27482806/check-if-id-exists-in-a-collection-with-mongoose
+https://stackoverflow.com/questions/55023220/boolean-value-undefined-outside-of-subscribtion
+https://kb.objectrocket.com/mongo-db/the-mongoose-exists-function-1022
+https://stackoverflow.com/questions/19035373/how-do-i-redirect-in-expressjs-while-passing-some-context
+https://expressjs.com/en/resources/middleware/session.html
+https://stackoverflow.com/questions/19667900/check-if-a-document-exists-in-mongoose-node-js/19669236
+
+alert
+https://stackoverflow.com/questions/56352600/how-can-show-alert-message-in-node-js
+
+
+how to uninstall npm modules
+https://flaviocopes.com/npm-uninstall-packages/
+npm uninstall -S <package-name>
+npm uninstall -D <package-name>
+
+
+youtube data api 
+https://www.youtube.com/watch?v=EAyo3_zJj5c
+https://www.youtube.com/watch?v=oLb5ZxQXJkU
+https://www.youtube.com/watch?v=TE66McLMMEw
+

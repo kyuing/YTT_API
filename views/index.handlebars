@@ -1,0 +1,66 @@
+ 
+{{!-- <div id="transcripted" class="mt-5 pt-5" style="padding-top: 10px;"> --}}
+<div id="results" class="mb-5">
+  <div class="container">
+    <div class="tr_accordion" id="accordionTranscriptedResults">
+      <div class="card">
+        <div class="card-header" id="tr_headingOne">
+          <h2 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#tr_collapseOne" aria-expanded="true" aria-controls="tr_collapseOne">
+              TRANSCRIPTION 
+            </button>
+          </h2>
+        </div>
+    
+        <div id="tr_collapseOne" class="collapse show" aria-labelledby="tr_headingOne" data-parent="#accordionTranscriptedResults">
+          <div class="card-body">
+            {{#this}}
+              {{!-- <p>{{_id}}</p> --}}
+              <div id="video">
+                  <iframe width="640" height="360" src="https://www.youtube.com/embed/{{videoId}}"  frameborder="0"></iframe>
+              </div>
+              <div class="mt-0 mb-5 text-center">
+                <p style="font-size:1.9vw">URL :  <a href="{{url}}" target="_blank">{{url}}</a></p>
+              </div>
+              <textarea id="ta" name="ta" style="display:none;">{{title}}</textarea>
+              <p id="title" style="color: #f6e9e9;"><strong></strong></p>
+                {{#each captionTracks}}
+                  {{!-- {{@index}} {{this}} --}}
+                  <div style="padding: 6px">
+                    <button id="{{this.languageCode}}_{{this.kind}}" onclick="manageScript()" kind="{{this.kind}}">{{this.name}}</button>
+                    <p id="script_{{this.languageCode}}_{{this.kind}}" class="hideScript" kind="{{this.kind}}">{{this.script}}</p>
+                  </div>
+                  
+                {{/each}}
+            {{/this}}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" id="tr_headingTwo">
+          <h2 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#tr_collapseTwo" aria-expanded="true" aria-controls="tr_collapseTwo">
+              WORD CLOUD 
+            </button>
+          </h2>
+        </div>
+    
+        <div id="tr_collapseTwo" class="collapse" aria-labelledby="tr_headingTwo" data-parent="#accordionTranscriptedResults">
+          <div class="card-body">
+              {{#each captionTracks}}
+                  {{!-- {{@index}} {{this}} --}}
+                  <div style="padding: 6px">
+                    <button id="{{this.languageCode}}_{{this.kind}}" onclick="manageWrodcloud()" kind="{{this.kind}}">{{this.name}}</button>
+                    {{!-- <div class="container text-center"><div id="lds-dual-ring_{{this.languageCode}}_{{this.kind}}" class="lds-dual-ring pt-3"></div></div> --}}
+                    <div id="lds-dual-ring_{{this.languageCode}}_{{this.kind}}" class="lds-dual-ring pt-4"></div>
+                    <div id="wc_{{this.languageCode}}_{{this.kind}}" class="svg-container text-center"></div> 
+                  </div>
+              {{/each}}
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
