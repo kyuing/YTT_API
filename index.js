@@ -23,6 +23,8 @@ app.listen(port, function (err) {
   console.log(`Listening on  ${port} `);
 });
 
+
+//https://mongoosejs.com/docs/documents.html
 const dbURI = process.env.DB_URL;
 mongoose
   .connect(dbURI, {

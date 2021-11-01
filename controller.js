@@ -110,15 +110,34 @@ exports.getDoc = function (req, res) {
 
     if (data) {
 
-      var source = fs.readFileSync(__dirname + "/views/js/my.handlebars", "utf8");
-      var template = Handlebars.compile(source);
+      //legacy code
+      // var source = fs.readFileSync(__dirname + "/views/js/my.handlebars", "utf8");
+      // var template = Handlebars.compile(source);
+      // res.end(template(data).toString());
 
-      res.end(template(data).toString());
+      // const {data} = 
+      // res.json(data.url);
+      // res.write(data); //display the list of user names on the page
+      
+      const d = JSON.parse(JSON.stringify(data));
+      // const d = JSON.parse(JSON.stringify(data.toString()));
+      // const {d} = JSON.stringify(data);
+      // const d = JSON.parse({data});
+      // const d = JSON.parse({data});
+
+      res.end(
+        d._id + "\n" +
+        d.url
+      );
+
+
+      // res.json(d.url); //works but gives quetes
+      // res.json(d._id.toString() + "\n" + d.url);
+      // res.json(JSON.parse(d._id));
+      // res.json(d._id.toString().replaceAll("\"", ""));
+      // res.json(d._id.replace(/\"/g, ""));
+
     } 
-    // else {
-    //   console.log("error msg at getDoc: No data found");
-    //   return res.redirect("/error/" + "No data found")
-    // }
   }).lean();
 
 };
