@@ -125,9 +125,21 @@ exports.getDoc = function (req, res) {
       // const d = JSON.parse({data});
       // const d = JSON.parse({data});
 
+      res.writeHead(200, {
+        'Content-Type': 'text/plain; charset=utf-8'
+      });
+      
       res.end(
         d._id + "\n" +
-        d.url
+        d.url + "\n" +
+        d.videoId + "\n" +
+        //some languages are shown as html entity codes..but is title really important?
+        d.title.toString() + "\n" +
+        // $('input').val($('<div/>', { html: d.title}).text()) + "\n" +
+        d.captionTracks[3]['name'] + "\n" +
+        d.captionTracks[3]['script'] + "\n"   //scripts as well..
+
+        //anyways, have to get each of language of a video on req
       );
 
 
