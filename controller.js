@@ -96,8 +96,8 @@ exports.getError = function (req, res) {
 
 }
 
-
-exports.getDoc = function (req, res) {
+//it must be a point where api gives a set of important info
+exports.get_a_doc = function (req, res) {
  
   // const id = JSON.parse(JSON.stringify(req.query.id));
   // console.log("const id: " + id)
@@ -113,51 +113,85 @@ exports.getDoc = function (req, res) {
     if (data) {
       
       const d = JSON.parse(JSON.stringify(data));
-      // const d = JSON.parse(JSON.stringify(data.toString()));
-      // const {d} = JSON.stringify(data);
-      // const d = JSON.parse({data});
-      // const d = JSON.parse({data});
 
       res.writeHead(200, {
         'Content-Type': 'text/plain; charset=utf-8'
       });
 
-
       //well, vssId can be more correct than languageCode in use.
       const al = d.captionTracks.map(lang =>lang.languageCode); 
       res.end(
-        JSON.stringify(d, null, 3) + "\n\n" +
-        d._id + "\n" +
+        // JSON.stringify(d, null, 3) + "\n\n" +
+
+        //_id is much more important since it is a door for any other req
+        d._id + "\n" +  // /ytt/api
         d.url + "\n" +
+        d.title + "\n" +
         d.videoId + "\n" +
-        //some languages are shown as html entity codes..but is title really important?
-        //scripts as well..
-        d.title.toString() + "\n" +
-        // $('input').val($('<div/>', { html: d.title}).text()) + "\n" +
-        d.captionTracks[3]['name'] + "\n" +
-        d.captionTracks[3]['script'] + "\n" +   
-        "d.captionTracks.length: " + d.captionTracks.length + "\n" +
-        
-        //anyways, have to get each of language of a video on req
-        //what way is good to map each of language?....
-        //may need an endpoint for searching available lang
-        //and another endpoint for static input e.g. /:language
-        "avialable languages: " + al + "\n" 
-        
-        //need text to voice, paraphrasing endpoint
+        d.captionTracks + "\n" + //[object Object]
+        d.captionTracks.length
       );
-
-
-      // res.json(d.url); //works but gives quetes
-      // res.json(d._id.toString() + "\n" + d.url);
-      // res.json(JSON.parse(d._id));
-      // res.json(d._id.toString().replaceAll("\"", ""));
-      // res.json(d._id.replace(/\"/g, ""));
-
     } 
   }).lean();
 
 };
+
+// exports.getDoc = function (req, res) {
+ 
+//   // const id = JSON.parse(JSON.stringify(req.query.id));
+//   // console.log("const id: " + id)
+//   // console.log(req.params.id);
+//   URL.findOne({ _id: req.params.id }, function (err, data) {
+//     if (err) {
+//       console.log("err at getDoc: " + err)
+//       // res.status(400).json(err);
+//       return res.redirect("/error/" + "No data found")
+//     }
+
+//     //https://youtu.be/CuklIb9d3fI
+//     if (data) {
+      
+//       const d = JSON.parse(JSON.stringify(data));
+
+//       res.writeHead(200, {
+//         'Content-Type': 'text/plain; charset=utf-8'
+//       });
+
+//       //well, vssId can be more correct than languageCode in use.
+//       const al = d.captionTracks.map(lang =>lang.languageCode); 
+//       res.end(
+//         JSON.stringify(d, null, 3) + "\n\n" +
+//         d._id + "\n" +
+//         d.url + "\n" +
+//         d.videoId + "\n" +
+//         //some languages are shown as html entity codes..but is title really important?
+//         //scripts as well..
+//         d.title + "\n" +
+//         // $('input').val($('<div/>', { html: d.title}).text()) + "\n" +
+//         d.captionTracks[3]['name'] + "\n" +
+//         d.captionTracks[3]['script'] + "\n" +   
+//         "d.captionTracks.length: " + d.captionTracks.length + "\n" +
+        
+//         //anyways, have to get each of language of a video on req
+//         //what way is good to map each of language?....
+//         //may need an endpoint for searching available lang
+//         //and another endpoint for static input e.g. /:language
+//         "avialable languages: " + al + "\n" 
+        
+//         //need text to voice, paraphrasing endpoint
+//       );
+
+
+//       // res.json(d.url); //works but gives quetes
+//       // res.json(d._id.toString() + "\n" + d.url);
+//       // res.json(JSON.parse(d._id));
+//       // res.json(d._id.toString().replaceAll("\"", ""));
+//       // res.json(d._id.replace(/\"/g, ""));
+
+//     } 
+//   }).lean();
+
+// };
 
 exports.postDoc = function (req, res) {
   
@@ -180,8 +214,8 @@ exports.postDoc = function (req, res) {
           data.url
       );
       // console.log(JSON.parse(JSON.stringify(data.body.id)));
-      res.redirect("/ytt/" + data._id);  //data.id returns undefined
-      
+      // res.redirect("/ytt/" + data._id);  //prev
+      res.redirect("/ytt/api/" + data._id);  
     } 
     else {  
   
