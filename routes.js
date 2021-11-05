@@ -13,6 +13,7 @@ router.get("/error/:id", ctrl.getError); //get an error
 router.post("/ytt", ctrl.postDoc); //post a doc
 router.get("/ytt_all", ctrl.getDocs); //get all docs
 
+// router.get("/ytt_all", ctrl.getDocs); //get all docs
 // router.post("/ytt_ytapi_test", ctrl.test_YT_API_FOR_SINGLE_SEARCH); //post == not working
 // router.get("/ytt_ytapi_test", ctrl.test_YT_API_FOR_SINGLE_SEARCH);
 

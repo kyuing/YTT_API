@@ -101,6 +101,7 @@ exports.getDoc = function (req, res) {
  
   // const id = JSON.parse(JSON.stringify(req.query.id));
   // console.log("const id: " + id)
+  // console.log(req.params.id);
   URL.findOne({ _id: req.params.id }, function (err, data) {
     if (err) {
       console.log("err at getDoc: " + err)
@@ -108,16 +109,8 @@ exports.getDoc = function (req, res) {
       return res.redirect("/error/" + "No data found")
     }
 
+    //https://youtu.be/CuklIb9d3fI
     if (data) {
-
-      //legacy code
-      // var source = fs.readFileSync(__dirname + "/views/js/my.handlebars", "utf8");
-      // var template = Handlebars.compile(source);
-      // res.end(template(data).toString());
-
-      // const {data} = 
-      // res.json(data.url);
-      // res.write(data); //display the list of user names on the page
       
       const d = JSON.parse(JSON.stringify(data));
       // const d = JSON.parse(JSON.stringify(data.toString()));
@@ -128,18 +121,30 @@ exports.getDoc = function (req, res) {
       res.writeHead(200, {
         'Content-Type': 'text/plain; charset=utf-8'
       });
-      
+
+
+      //well, vssId can be more correct than languageCode in use.
+      const al = d.captionTracks.map(lang =>lang.languageCode); 
       res.end(
+        JSON.stringify(d, null, 3) + "\n\n" +
         d._id + "\n" +
         d.url + "\n" +
         d.videoId + "\n" +
         //some languages are shown as html entity codes..but is title really important?
+        //scripts as well..
         d.title.toString() + "\n" +
         // $('input').val($('<div/>', { html: d.title}).text()) + "\n" +
         d.captionTracks[3]['name'] + "\n" +
-        d.captionTracks[3]['script'] + "\n"   //scripts as well..
-
+        d.captionTracks[3]['script'] + "\n" +   
+        "d.captionTracks.length: " + d.captionTracks.length + "\n" +
+        
         //anyways, have to get each of language of a video on req
+        //what way is good to map each of language?....
+        //may need an endpoint for searching available lang
+        //and another endpoint for static input e.g. /:language
+        "avialable languages: " + al + "\n" 
+        
+        //need text to voice, paraphrasing endpoint
       );
 
 
