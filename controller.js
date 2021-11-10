@@ -121,19 +121,44 @@ exports.get_a_doc = function (req, res) {
       //well, vssId can be more correct than languageCode in use.
       const al = d.captionTracks.map(lang =>lang.languageCode); 
       res.end(
-        // JSON.stringify(d, null, 3) + "\n\n" +
+        //once you get JSON of a doc, everything is there. 
+        JSON.stringify(d, null, 3) + "\n\n" 
 
-        //_id is much more important since it is a door for any other req
-        d._id + "\n" +  // /ytt/api
-        d.url + "\n" +
-        d.title + "\n" +
-        d.videoId + "\n" +
-        d.captionTracks + "\n" + //[object Object]
-        d.captionTracks.length
+        //or _id is much more important since it is a door for any other req
+        // d._id + "\n" +  // /ytt/api
+        // d.url + "\n" +
+        // d.title + "\n" +
+        // d.videoId + "\n" +
+        // d.captionTracks + "\n" + //[object Object]
+        // d.captionTracks.length   //this need to come with lang code or name
       );
     } 
   }).lean();
 
+};
+
+//since getDocs function is not in the main use, alerting is not implemented here.
+//if necessary to implement alert in relation to error or no data at getDocs, refer to the function getDoc 
+exports.getDocs = function (req, res) {
+  URL.find({}).lean().exec(function (err, data) {
+      if (err) {
+        res.status(400).json(err);
+      }
+
+      if (data) {
+
+      
+        res.writeHead(200, {
+          'Content-Type': 'text/plain; charset=utf-8'
+        });
+        res.end(JSON.stringify(data, null, 3) + "\n\n");
+        
+      
+      } else {
+        console.log("No data found. Back to home");
+        res.redirect("/");
+      }
+    });
 };
 
 // exports.getDoc = function (req, res) {
@@ -406,44 +431,3 @@ exports.postDoc = function (req, res) {
 
 };
 
-//since getDocs function is not in the main use, alerting is not implemented here.
-//if necessary to implement alert in relation to error or no data at getDocs, refer to the function getDoc 
-exports.getDocs = function (req, res) {
-  URL.find({}).lean().exec(function (err, data) {
-      if (err) {
-        res.status(400).json(err);
-      }
-
-      if (data) {
-
-      //if data goes bigger, 
-      //create another handlebars template that only takes _id, url, tt_url, title
-      var source = fs.readFileSync(__dirname + "/views/js/my.handlebars", "utf8");
-      var template = Handlebars.compile(source);
-      res.end(template(data).toString());
-
-      /********************************************************************************
-       //not working
-      var source = fs.createReadStream(__dirname + "/views/js/my.handlebars", "utf8");
-      var template = Handlebars.compile(source);
-      res.end(template(data).toString());
-      ********************************************************************************/
-     
-      /*************************************************************************************
-       //works but unecessary
-      let readStream = fs.createReadStream(__dirname + "/views/js/my.handlebars", "utf8");
-      readStream.on("close", () => {
-        res.end();
-      });
-
-      var source = fs.readFileSync(__dirname + "/views/js/my.handlebars", "utf8");
-      var template = Handlebars.compile(source);
-      readStream.pipe(res.end(template(data).toString())); // Stream chunks to response
-      **************************************************************************************/
-
-      } else {
-        console.log("No data found. Back to home");
-        res.redirect("/");
-      }
-    });
-};
