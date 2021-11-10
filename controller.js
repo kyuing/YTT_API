@@ -97,7 +97,7 @@ exports.getError = function (req, res) {
 }
 
 //it must be a point where api gives a set of important info
-exports.get_a_doc = function (req, res) {
+exports.getDoc = function (req, res) {
  
   // const id = JSON.parse(JSON.stringify(req.query.id));
   // console.log("const id: " + id)
@@ -124,6 +124,11 @@ exports.get_a_doc = function (req, res) {
         //once you get JSON of a doc, everything is there. 
         JSON.stringify(d, null, 3) + "\n\n" 
 
+
+        //keep going with url? cuz this is the same as _id
+        //need endpoints for captionTracks, word cloud, save to file, paraphrasing
+        //you are to want to get inner res in a doc as each of endpoint
+
         //or _id is much more important since it is a door for any other req
         // d._id + "\n" +  // /ytt/api
         // d.url + "\n" +
@@ -131,6 +136,71 @@ exports.get_a_doc = function (req, res) {
         // d.videoId + "\n" +
         // d.captionTracks + "\n" + //[object Object]
         // d.captionTracks.length   //this need to come with lang code or name
+      );
+    } 
+  }).lean();
+
+};
+
+
+exports.getScripts = function (req, res) {
+  URL.findOne({ _id: req.params.id }, function (err, data) {
+    if (err) {
+      console.log("err at getDoc: " + err)
+      // res.status(400).json(err);
+      return res.redirect("/error/" + "No data found")
+    }
+
+    if (data) {
+      
+      const d = JSON.parse(JSON.stringify(data));
+
+      res.writeHead(200, {
+        'Content-Type': 'text/plain; charset=utf-8'
+      });
+
+      res.end(
+        JSON.stringify(d.captionTracks, null, 4) + "\n\n" 
+      );
+    } 
+  }).lean();
+
+};
+
+exports.getAvailableLang = function (req, res) {
+  URL.findOne({ _id: req.params.id }, function (err, data) {
+    if (err) {
+      console.log("err at getDoc: " + err)
+      // res.status(400).json(err);
+      return res.redirect("/error/" + "No data found")
+    }
+    if (data) { 
+      // const d = JSON.parse(JSON.stringify(data));
+      const al = data.captionTracks.map(lang =>lang.name); 
+      // let al = [];
+      // for (var i = 0; i < d.length; i++) {
+      //   al.push(i + ": " + d[i].name);
+      // }
+      
+      // al.map((myArr, index) => {
+      //   console.log(`your index is -> ${index} AND value is ${myArr}`);
+      // })
+
+      res.writeHead(200, {
+        'Content-Type': 'text/plain; charset=utf-8'
+      });
+      toReturn =  al.map((myArr, index) => {
+        return `${index}: ${myArr}`;
+        // return `${index}: ${myArr} \n`;
+      }) 
+
+      res.end(
+        // al + "\n" + 
+        // JSON.stringify(al) + "\n\n" 
+        // JSON.stringify(al.length + al) + "\n\n" 
+        // JSON.stringify(`${index} + ": " + al`) + "\n\n" 
+        // toReturn + "\n\n" +
+        JSON.stringify(toReturn) + "\n\n" 
       );
     } 
   }).lean();
@@ -146,12 +216,12 @@ exports.getDocs = function (req, res) {
       }
 
       if (data) {
-
+        // const d = data.map(lang =>lang.languageCode); 
       
         res.writeHead(200, {
           'Content-Type': 'text/plain; charset=utf-8'
         });
-        res.end(JSON.stringify(data, null, 3) + "\n\n");
+        res.end(JSON.stringify(data, null, 4) + "\n\n");
         
       
       } else {

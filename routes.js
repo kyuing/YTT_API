@@ -11,11 +11,12 @@ router.get("/ytt", ctrl.getSearch); //get video search result
 // router.get("/ytt/:id", ctrl.getDoc); //get a doc
 
 router.get("/error/:id", ctrl.getError); //get an error
+
 router.post("/ytt", ctrl.postDoc); //post a doc
-router.get("/ytt_all", ctrl.getDocs); //get all docs
-
-router.get("/ytt/api/:id", ctrl.get_a_doc); //get a doc and give an important set of a document info
-
+router.get("/ytt/api/all", ctrl.getDocs); //get all docs
+router.get("/ytt/api/:id", ctrl.getDoc); //get a doc in full
+router.get("/ytt/api/:id/scripts", ctrl.getScripts);  //get all the languages of scripts in a doc
+router.get("/ytt/api/:id/numoflangs", ctrl.getAvailableLang);
 
 
 // router.post("/ytt_ytapi_test", ctrl.test_YT_API_FOR_SINGLE_SEARCH); //post == not working
