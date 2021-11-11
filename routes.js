@@ -15,7 +15,8 @@ router.get("/error/:id", ctrl.getError); //get an error
 router.post("/ytt", ctrl.postDoc); //post a doc
 router.get("/ytt/api/all", ctrl.getDocs); //get all docs
 router.get("/ytt/api/:id", ctrl.getDoc); //get a doc in full
-router.get("/ytt/api/:id/scripts", ctrl.getScripts);  //get all the languages of scripts in a doc
+router.get("/ytt/api/:id/scripts", ctrl.getScripts);  //get scripts by all languages available in a doc
+router.get("/ytt/api/:id/script", ctrl.getScript);  //get a script by a language in a doc. just add q='language name goes here'
 router.get("/ytt/api/:id/numoflangs", ctrl.getAvailableLang);
 
 

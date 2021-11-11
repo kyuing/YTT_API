@@ -96,12 +96,8 @@ exports.getError = function (req, res) {
 
 }
 
-//it must be a point where api gives a set of important info
 exports.getDoc = function (req, res) {
  
-  // const id = JSON.parse(JSON.stringify(req.query.id));
-  // console.log("const id: " + id)
-  // console.log(req.params.id);
   URL.findOne({ _id: req.params.id }, function (err, data) {
     if (err) {
       console.log("err at getDoc: " + err)
@@ -109,39 +105,125 @@ exports.getDoc = function (req, res) {
       return res.redirect("/error/" + "No data found")
     }
 
-    //https://youtu.be/CuklIb9d3fI
     if (data) {
       
       const d = JSON.parse(JSON.stringify(data));
+      const al = data.captionTracks.map(lang =>lang.vssId); 
+      returnAl =  al.map((myArr, index) => {
+        return `${index}: ${myArr}`;
+      }) 
+
 
       res.writeHead(200, {
-        'Content-Type': 'text/plain; charset=utf-8'
+        // 'Content-Type': 'text/plain; charset=utf-8'
+        'Content-Type': 'application/json'
       });
 
-      //well, vssId can be more correct than languageCode in use.
-      const al = d.captionTracks.map(lang =>lang.languageCode); 
-      res.end(
-        //once you get JSON of a doc, everything is there. 
-        JSON.stringify(d, null, 3) + "\n\n" 
+      //a full res of a doc
+      // res.end(JSON.stringify(d, null, 3));
 
+      console.log(JSON.stringify(
+        {
+          "_id": d._id,
+          "title": d.title,
+          "url": d.url,
+          "available languages in captionTracks": returnAl
+        },null,4  
+      ));
 
-        //keep going with url? cuz this is the same as _id
-        //need endpoints for captionTracks, word cloud, save to file, paraphrasing
-        //you are to want to get inner res in a doc as each of endpoint
+      //a specific set of res in a doc
+      //it works but it's better to go for vssId
+      res.end(JSON.stringify(
+        {
+          "_id": d._id,
+          "title": d.title,
+          "url": d.url,
+          "available languages in captionTracks": returnAl
+        },null,4  
+      ));
 
-        //or _id is much more important since it is a door for any other req
-        // d._id + "\n" +  // /ytt/api
-        // d.url + "\n" +
-        // d.title + "\n" +
-        // d.videoId + "\n" +
-        // d.captionTracks + "\n" + //[object Object]
-        // d.captionTracks.length   //this need to come with lang code or name
+      /***********************************************************
+      console.log(JSON.stringify(
+        {
+          "_id": d._id,
+          "title": d.title,
+          "url": d.url,
+          "available languages in captionTracks": returnAl
+        },null,4  
+      ));
+
+      //a specific set of res in a doc
+      //it works but it's better to go for vssId
+      res.end(JSON.stringify(
+        {
+          "_id": d._id,
+          "title": d.title,
+          "url": d.url,
+          "available languages in captionTracks": returnAl
+        },null,4  
+      ));
+      **********************************************************/
+      
+      /*******************************************
+      //works but without a line break
+      res.json(
+        {
+          "_id": d._id,
+          "title": d.title
+        }
       );
+      *******************************************/
+     
+      /************************************************************************************
+       * some tests..
+      //   //core info of a doc
+      //   res.json(d._id) + "\n" +  // /ytt/api);
+      //   // d.url + "\n" +
+      //   // d.title + "\n" +
+      //   // d.videoId + "\n" +
+      //   // d.captionTracks + "\n" + //[object Object]
+      //   // d.captionTracks.length   //this need to come with lang code or name
+      // );
+      **************************************************************************************/
     } 
   }).lean();
 
 };
 
+exports.getScript = function (req, res) {
+
+  // const query = req.query.q;// query = {sex:"female"}
+  console.log("requested vssId: " + req.query.q)
+
+  URL.findOne({ _id: req.params.id }, function (err, data) {
+    if (err) {
+      console.log("err at getDoc: " + err)
+      // res.status(400).json(err);
+      return res.redirect("/error/" + "No data found")
+    }
+
+    if (data) {
+      
+      const d = JSON.parse(JSON.stringify(data));
+      let toReturn;
+      for (var i = 0; i < d.captionTracks.length; i++) {
+        if(d.captionTracks[i]['vssId'] === req.query.q) {
+          toReturn = d.captionTracks[i]['script'];
+        }
+      }      
+
+      res.writeHead(200, {
+        'Content-Type': 'text/plain; charset=utf-8'
+      });
+
+      res.end(
+        JSON.stringify(toReturn, null, 4) + "\n\n" 
+        // JSON.stringify(d.captionTracks[0]['script'], null, 4) + "\n\n" 
+      );
+    } 
+  }).lean();
+
+};
 
 exports.getScripts = function (req, res) {
   URL.findOne({ _id: req.params.id }, function (err, data) {
