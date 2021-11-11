@@ -119,18 +119,26 @@ exports.getDoc = function (req, res) {
         'Content-Type': 'application/json'
       });
 
-      //a full res of a doc
-      // res.end(JSON.stringify(d, null, 3));
-
-      console.log(JSON.stringify(
-        {
-          "_id": d._id,
-          "title": d.title,
-          "url": d.url,
-          "available languages in captionTracks": returnAl
-        },null,4  
-      ));
-
+      //assuming that user already knows _id of a doc, 
+      //a full record of a doc is also available to be returned
+      if(req.query.full === "true") {
+        //a full res of a doc
+        console.log(JSON.stringify(d, null, 3));
+        res.end(JSON.stringify(d, null, 3));
+      }
+      //default res
+      //return _id, title, url, and info of available langs only
+      else { 
+        console.log(JSON.stringify(
+          {
+            "_id": d._id,
+            "title": d.title,
+            "url": d.url,
+            "available languages in captionTracks": returnAl
+          },null,4  
+        ));
+      }
+      
       //a specific set of res in a doc
       //it works but it's better to go for vssId
       res.end(JSON.stringify(
@@ -192,7 +200,8 @@ exports.getDoc = function (req, res) {
 
 exports.getScript = function (req, res) {
 
-  // const query = req.query.q;// query = {sex:"female"}
+  //https://stackoverflow.com/questions/6912584/how-to-get-get-query-string-variables-in-express-js-on-node-js
+  // const query = req.query.q;// query = {field:"a"}
   console.log("requested vssId: " + req.query.q)
 
   URL.findOne({ _id: req.params.id }, function (err, data) {
@@ -209,6 +218,8 @@ exports.getScript = function (req, res) {
       for (var i = 0; i < d.captionTracks.length; i++) {
         if(d.captionTracks[i]['vssId'] === req.query.q) {
           toReturn = d.captionTracks[i]['script'];
+        }else {
+         toReturn = null;
         }
       }      
 
@@ -216,10 +227,20 @@ exports.getScript = function (req, res) {
         'Content-Type': 'text/plain; charset=utf-8'
       });
 
-      res.end(
-        JSON.stringify(toReturn, null, 4) + "\n\n" 
-        // JSON.stringify(d.captionTracks[0]['script'], null, 4) + "\n\n" 
-      );
+      if(toReturn != null) {
+        res.end(
+          JSON.stringify(toReturn.toString(), null, 4) + "\n\n" 
+          // JSON.stringify(d.captionTracks[0]['script'], null, 4) + "\n\n" 
+        );
+      }else {
+        toReturn = "Please provide a valid query parameter\n" +
+        "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+        "Check the vssId you want at the default info of the document:\n" +
+        "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
+        "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
+        res.end(toReturn);
+      }
+     
     } 
   }).lean();
 
@@ -259,15 +280,6 @@ exports.getAvailableLang = function (req, res) {
     if (data) { 
       // const d = JSON.parse(JSON.stringify(data));
       const al = data.captionTracks.map(lang =>lang.name); 
-      // let al = [];
-      // for (var i = 0; i < d.length; i++) {
-      //   al.push(i + ": " + d[i].name);
-      // }
-      
-      // al.map((myArr, index) => {
-      //   console.log(`your index is -> ${index} AND value is ${myArr}`);
-      // })
-
       res.writeHead(200, {
         'Content-Type': 'text/plain; charset=utf-8'
       });
@@ -313,67 +325,42 @@ exports.getDocs = function (req, res) {
     });
 };
 
-// exports.getDoc = function (req, res) {
- 
-//   // const id = JSON.parse(JSON.stringify(req.query.id));
-//   // console.log("const id: " + id)
-//   // console.log(req.params.id);
-//   URL.findOne({ _id: req.params.id }, function (err, data) {
-//     if (err) {
-//       console.log("err at getDoc: " + err)
-//       // res.status(400).json(err);
-//       return res.redirect("/error/" + "No data found")
-//     }
-
-//     //https://youtu.be/CuklIb9d3fI
-//     if (data) {
-      
-//       const d = JSON.parse(JSON.stringify(data));
-
-//       res.writeHead(200, {
-//         'Content-Type': 'text/plain; charset=utf-8'
-//       });
-
-//       //well, vssId can be more correct than languageCode in use.
-//       const al = d.captionTracks.map(lang =>lang.languageCode); 
-//       res.end(
-//         JSON.stringify(d, null, 3) + "\n\n" +
-//         d._id + "\n" +
-//         d.url + "\n" +
-//         d.videoId + "\n" +
-//         //some languages are shown as html entity codes..but is title really important?
-//         //scripts as well..
-//         d.title + "\n" +
-//         // $('input').val($('<div/>', { html: d.title}).text()) + "\n" +
-//         d.captionTracks[3]['name'] + "\n" +
-//         d.captionTracks[3]['script'] + "\n" +   
-//         "d.captionTracks.length: " + d.captionTracks.length + "\n" +
-        
-//         //anyways, have to get each of language of a video on req
-//         //what way is good to map each of language?....
-//         //may need an endpoint for searching available lang
-//         //and another endpoint for static input e.g. /:language
-//         "avialable languages: " + al + "\n" 
-        
-//         //need text to voice, paraphrasing endpoint
-//       );
-
-
-//       // res.json(d.url); //works but gives quetes
-//       // res.json(d._id.toString() + "\n" + d.url);
-//       // res.json(JSON.parse(d._id));
-//       // res.json(d._id.toString().replaceAll("\"", ""));
-//       // res.json(d._id.replace(/\"/g, ""));
-
-//     } 
-//   }).lean();
-
-// };
-
 exports.postDoc = function (req, res) {
+
+  //prototype
+  // const url = JSON.parse(JSON.stringify(req.body.url));
+  // console.log("console.log(url) at POST: " + url);
+
+  //only one query 
+  // console.log("\nconsole.log(req.query.q) at POST: " + req.query.q);
+  // const url = JSON.parse(JSON.stringify(req.query.q));
+  // console.log("console.log(url) at POST: " + url);
+
+  //1st q = youtube video url
+  //2nd q = -full or undefined
+  // const url = JSON.parse(JSON.stringify(req.query.q));
+  // console.log("console.log(url) at POST: " + url);
+
+  //https://stackoverflow.com/questions/39530988/getting-request-query-parameters-count
+  //https://www.codegrepper.com/code-examples/javascript/req+query+params+express   //https://(www)?(\.)?(m\.)?youtu.*
+  // console.log(Object.keys(req.query.q).length);  //works but it's just better to use each of specific q names
+  //however, you need url validation using regex e.g. https://www.w3schools.com/jsref/jsref_match.asp
+
   
-  const url = JSON.parse(JSON.stringify(req.body.url));
-  console.log("console.log(url) at POST: " + url);
+  let url;
+  let isFullDocRes;
+  
+  if(req.query.full === "true") {
+    console.log("\nconsole.log(req.query.url, req.query.full) at POST: " + req.query.url + ", " + req.query.full + "\n")
+    url = JSON.parse(JSON.stringify(req.query.url));
+    isFullDocRes = true;
+    // console.log("console.log(url) at POST: " + url);
+  }else {
+    console.log("\nconsole.log(req.query.url) at POST: " + req.query.url + "\n");
+    url = JSON.parse(JSON.stringify(req.query.url));
+    isFullDocRes = false;
+  }
+  
 
   URL.findOne({ url: url }, function (err, data) {
     if (err) {
@@ -392,7 +379,12 @@ exports.postDoc = function (req, res) {
       );
       // console.log(JSON.parse(JSON.stringify(data.body.id)));
       // res.redirect("/ytt/" + data._id);  //prev
-      res.redirect("/ytt/api/" + data._id);  
+      if(!isFullDocRes) {
+        res.redirect("/ytt/api/" + data._id);
+      }else {
+        res.redirect("/ytt/api/" + data._id + "?full=true");
+      }
+        
     } 
     else {  
   
@@ -555,8 +547,15 @@ exports.postDoc = function (req, res) {
                         res.status(400).json(err);
                       }
                       console.log("POST to URL collection successfully");
-                      res.redirect("/ytt/" + new_data.id);  //to getDoc
+                      if(!isFullDocRes) {
+                        res.redirect("/ytt/api/" + new_data.id);
+                      }else {
+                        res.redirect("/ytt/api/" + new_data.id + "?full=true");
+                      }
+                      
+                      // res.redirect("/ytt/api/" + new_data.id);  //to getDoc
 
+                      // res.redirect("/ytt/" + new_data.id);  //to getDoc
                       // res.redirect("/ytt/" + new_data.id + "#transcription");  //works but ignores css
                       // res.redirect("/ytt_all"); //to getDocs
 
