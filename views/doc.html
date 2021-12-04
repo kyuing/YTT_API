@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4EE50SY50B"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4EE50SY50B');
+  </script>
+
+  <meta name="author" content="kyuing" />
+  <meta name="title" content="YoutubeToText" />
+  <meta name="subject" content="Youtube To Text" />
+  <meta name="keywords" content="youtube to text, online, youtube caption, youtube subtitle, youtube transcription, youtube transcript, youtube script, youtube video caption, youtube video subtitle, youtube video transcription, youtube video transcript, youtube video script, youtube video, youtube, caption, subtitle, transcription, transcript, script, closed caption, cc" />
+  <meta name="description" itemprop="description" content="Looking for youtube to text converter? Searching for YouTube transcript generator free? Wanna read Youtube video? &#9786; Read Youtube at youtubetotext.online &#9786; All you have to do is to simply get & copy Youtube video URL/address and then read Youtube video at YoutubeToText.online &#9786;">
+
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://youtubetotext.online" />
+  <meta property="og:title" content="Youtube To Text | Read Youtube!" />
+  <meta property="og:url" content="https://youtubetotext.online" />
+  <meta property="og:site_name" content="Youtube To Text">
+  <meta property="og:type" content="website" />
+  <!-- <meta property="og:image" content="https://i.ibb.co/2jWBcNC/<unset for now>"/> -->
+  <meta property="og:description"content="Looking for youtube to text converter? Searching for YouTube transcript generator free? Wanna read Youtube video? &#9786; Read Youtube at youtubetotext.online &#9786; All you have to do is to simply get & copy Youtube video URL/address and then read Youtube video at YoutubeToText.online &#9786;" />
+  <link rel="alternate" hreflang="en" href="https://youtubetotext.online">
+
+
+  <script src="./js/jquery.min.js"></script>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="./css/main.css" rel="stylesheet" type="text/css">
+
+  <title>YoutubeToText</title>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <!-- https://stackoverflow.com/questions/66614050/auto-close-navbar-when-click-on-link-responsive-mode -->
+  <!-- https://stackoverflow.com/questions/42401606/how-to-hide-collapsible-bootstrap-navbar-on-click -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top sticky">
+    <div class="container">
+      <a class="navbar-brand" href="./index.html">YoutubeToText</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a class="nav-link" href="./index.html">HOME</a>
+          </li>
+          <li class="nav-item active" data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a class="nav-link" href="./doc.html">API Documentation</a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container mt-5 mb-3" id="main-container">
+    
+
+    <h1>Introduction</h1>
+    API documentation goes here
+    <h1>Getting Started</h1>
+    <h2>If you are the first time</h2>
+    Open a terminal window and make an API GET request with a URL as query parameter for a resource.
+    <br>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
+      <code>curl http://localhost:5500/ytt/api?url=<b>https://youtu.be/MBdVXkSdhwU</b></code>
+    </div>
+    If the request is valid, you will see a successful message as follows.
+    <br>the highlighted value at the end of URL is the ID of the document,
+    which means, a document with the URL input exists in our DB. 
+    <br>Simply copy it. 
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>Found. Redirecting to /ytt/api/<mark style="background-color: #64645f">61aa5f048eb33d6305a522bb</mark></code>
+    </div>
+
+    Now, make an actual GET request with the ID.
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
+      <code>curl http://localhost:5500/ytt/api/<mark style="background-color: #64645f">61aa5f048eb33d6305a522bb</mark></code>
+    </div>
+
+
+    The response you get.
+    <div style="background-color: rgb(35, 36, 34)" class="pt-4 pb-1 mb-5">
+      <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
+      <pre style="color: pink" class="pt-1">
+        {
+          "_id": "61aa5f048eb33d6305a522bb",
+          "title": "BTS (방탄소년단) &#39;DNA&#39; Official MV",
+          "url": "https://youtu.be/MBdVXkSdhwU",
+          "available languages in captionTracks": [
+              "0: .en",
+              "1: a.ko"
+          ]
+        }
+      </pre>
+    </div>
+
+    <h1>Base URL</h1>
+
+    <h1>Resources</h1>
+
+    
+
+    
+    
+    
+  </div>
+
+  <footer class="footer">
+    <div class="container text-center">
+      <span class="text-muted">&copy; 2021 
+        <a href="https://www.youtubetotext.online/">YoutubeToText</a>
+      </span> |
+      <span><a href="mailto:hello@youtubetotext.online">email</a></span>
+      <!-- <span style="font-size: 30px"><a href="mailto:hello@youtubetotext.online">&#9993;</a></span> -->
+    </div>
+  </footer>
+
+</body>
+
+
+<!-- 
+ref 
+d3-cloud: https://github.com/jasondavies/d3-cloud
+Rapid D3.js Tutorial: Creating a Word Cloud | packtpub.com: https://youtu.be/1KEiTIu0k44
+
+Copyright (c) 2013, Jason Davies.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+  * Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+  * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+  * The name Jason Davies may not be used to endorse or promote products
+    derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL JASON DAVIES BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. -->
+
+</html>
