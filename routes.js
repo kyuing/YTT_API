@@ -13,7 +13,7 @@ router.get("/error/:id", ctrl.getError); //get an error
 
 //this can be used for POST on web using a form
 //if using this, you can kind of provide GET a doc in full
-router.post("/ytt", ctrl.postDoc); //post a doc  
+router.post("/ytt", ctrl.postDoc); //post a doc  <-- need another function and its legacy code 
 
 //post a doc using GET req.  
 //query params ?url='youtube video url goes here'
@@ -22,7 +22,7 @@ router.get("/ytt/api", ctrl.postDoc);
 router.get("/ytt/api/all", ctrl.getDocs); //get all docs
 router.get("/ytt/api/:id", ctrl.getDoc); //get a doc in full or in partial
 router.get("/ytt/api/:id/scripts", ctrl.getScripts);  //get scripts by all languages available in a doc
-router.get("/ytt/api/:id/script", ctrl.getScript);  //get a script by a language in a doc. just add ?q='vssId goes here'
+router.get("/ytt/api/:id/script", ctrl.getScript);  //get a script by a language in a doc. just add ?q=vssId goes here
 router.get("/ytt/api/:id/numoflangs", ctrl.getAvailableLang);
 
 

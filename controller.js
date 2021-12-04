@@ -137,8 +137,20 @@ exports.getDoc = function (req, res) {
             "available languages in captionTracks": returnAl
           },null,4  
         ));
+         //a specific set of res in a doc
+        //it works but it's better to go for vssId
+        res.end(JSON.stringify(
+          {
+            "_id": d._id,
+            "title": d.title,
+            "url": d.url,
+            "available languages in captionTracks": returnAl
+          },null,4  
+        ));
       }
+
       
+      /*************************************************************
       //a specific set of res in a doc
       //it works but it's better to go for vssId
       res.end(JSON.stringify(
@@ -149,6 +161,7 @@ exports.getDoc = function (req, res) {
           "available languages in captionTracks": returnAl
         },null,4  
       ));
+      ***************************************************************/
 
       /***********************************************************
       console.log(JSON.stringify(
@@ -218,9 +231,10 @@ exports.getScript = function (req, res) {
       for (var i = 0; i < d.captionTracks.length; i++) {
         if(d.captionTracks[i]['vssId'] === req.query.q) {
           toReturn = d.captionTracks[i]['script'];
-        }else {
-         toReturn = null;
         }
+        // else {
+        //  toReturn = null;
+        // }
       }      
 
       res.writeHead(200, {
@@ -418,6 +432,7 @@ exports.postDoc = function (req, res) {
 
         //let isLegacyMode = false;
 
+        //you can download the scraped html to page in detail.
         regexp = new RegExp(/captionTracks.*?(youtube.com\/api\/timedtext.*?)]/);
         match = regexp.exec(html);
         if (!match) {
@@ -439,7 +454,7 @@ exports.postDoc = function (req, res) {
         
         let parsed = JSON.parse(match[0].substring(match[0].indexOf("["), match[0].length));
         // let parsed = JSON.parse(match[0].substring(15, match[0].length));
-        // console.log(parsed);
+        console.log(parsed);
 
         let obj = {parsed};
         
@@ -482,6 +497,7 @@ exports.postDoc = function (req, res) {
                     }
                   }
                  
+                  //asr(Automatic speech recognition) is null.
                   if(kind === null || kind === undefined) {
                     captionTrack.push(
                       // {name: name},
@@ -496,6 +512,7 @@ exports.postDoc = function (req, res) {
                     );
                   }
 
+                  // asr(Automatic speech recognition) is NOT null.
                   if(kind != null || kind != undefined) {
                     captionTrack.push(
                       // {name: name},
@@ -516,7 +533,9 @@ exports.postDoc = function (req, res) {
                   // console.log("captionTrack.length: " + captionTrack.length);
                   // console.log("obj.parsed.length: " + obj.parsed.length);
                   // console.log(captionTrack);
+
                   
+                  //we collected all the language available
                   if(captionTrack.length === obj.parsed.length) {
                     // let ct = JSON.stringify(captionTrack);
                     // let ct = JSON.parse(JSON.stringify(captionTrack));
