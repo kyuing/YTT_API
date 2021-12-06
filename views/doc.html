@@ -142,12 +142,52 @@
     
     <h5 class="mt-4">Option 1) send a POST request and GET the document</h5>
     
-    example request
+    <b>example request</b>
     <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
       <code>http://localhost:5500/ytt/api?url=https://youtu.be/MBdVXkSdhwU</code>
     </div>
     
-    example response
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>POST to the collection successfully</code>
+    </div>
+    A successful response will automatically redirect to the endpoint 
+      <code style="background-color: rgb(35, 36, 34)">GET /ytt/api/:id</code>
+    <br>Click <a href="#getDocDefault">here</a> to check the response
+    
+    
+
+    <h5 class="mt-4">Option 2) send a POST request and GET the document with full details</h5>
+    
+    <b>example request</b>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api?url=https://youtu.be/MBdVXkSdhwU&full=true</code>
+    </div>
+    
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>POST to the collection successfully</code>
+    </div>
+    A successful response will automatically redirect to the endpoint 
+      <code style="background-color: rgb(35, 36, 34)">GET /ytt/api/:id?full=true</code>
+    <br>Click <a href="#getDocDetail">here</a> to check the response
+    
+    
+    <h2 class="mt-5">GET <span style="background-color: rgb(35, 36, 34);" class="mb-5 pt-1 pb-1 pl-1 pr-1">
+      <code>/ytt/api/:id</code> 
+    </span></h2>
+    Get a document in JSON by providing ID of the document
+    
+    <!-- this needs to be refined.. padding is too much for now -->
+    <div id=getDocDefault class="pt-5"></div>
+    <h5 class="mt-4">Option 1) GET a JSON document (default)</h5>
+
+    <div class="mt-3"><b>example request</b></div>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api/61aa5f048eb33d6305a522bb</code>
+    </div>
+    
+    <b>example response</b>
     <div style="background-color: rgb(35, 36, 34)" class="pt-4 pb-1 mb-5">
       <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
       <pre style="color: pink" class="pt-1">
@@ -165,15 +205,16 @@
       </pre>
     </div>
 
-    <h5 class="mt-4">Option 2) send a POST request and GET the document with full details</h5>
+    <div id=getDocDetail class="pt-5"></div>
+    <h5 id=getDocDetail class="mt-4">Option 2) GET a document in JSON with full details</h5>
     
-    example request
+    <b>example request</b>
     <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
-      <code>http://localhost:5500/ytt/api?url=https://youtu.be/MBdVXkSdhwU&full=true</code>
+      <code>http://localhost:5500/ytt/api/61aa5f048eb33d6305a522bb?full=true</code>
     </div>
     
-    example response
-    <div style="background-color: rgb(35, 36, 34)" class="pt-4 pb-1 mb-5">
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="pt-4 mb-5">
       <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
       <pre style="color: pink" class="pt-1">
         GET /ytt/api/61aa5f048eb33d6305a522bb?full=true 200 - - 17.834 ms
@@ -211,8 +252,7 @@
 
       </pre>
     </div>
-    
-    list each of the endpoints....
+
     
   </div>
 
