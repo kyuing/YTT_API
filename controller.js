@@ -6,8 +6,10 @@ const URL = require("./models/url"),
   // url = require('url'),
   fs = require("fs");
 
-const API_KEY = process.env.YT_DATA_API_KEY;
 
+const API_KEY = process.env.YT_DATA_API_KEY;
+const {spawn} = require('child_process');
+const {PythonShell} = require('python-shell');
 
 exports.getHello = function (req, res) {
 
@@ -246,6 +248,8 @@ exports.getScript = function (req, res) {
           JSON.stringify(toReturn.toString(), null, 4) + "\n\n" 
           // JSON.stringify(d.captionTracks[0]['script'], null, 4) + "\n\n" 
         );
+
+        
       }else {
         toReturn = "Please provide a valid query parameter\n" +
         "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
@@ -338,6 +342,152 @@ exports.getDocs = function (req, res) {
       }
     });
 };
+
+exports.getParaphrase = function (req, res) {
+
+  console.log("\nin the function getPegasus\n")
+
+  console.log("requested vssId: " + req.query.q)
+
+  URL.findOne({ _id: req.params.id }, function (err, data) {
+    if (err) {
+      console.log("err at getDoc: " + err)
+      // res.status(400).json(err);
+      return res.redirect("/error/" + "No data found")
+    }
+
+    if (data) {
+      
+      const d = JSON.parse(JSON.stringify(data));
+      let toReturn;
+      for (var i = 0; i < d.captionTracks.length; i++) {
+        if(d.captionTracks[i]['vssId'] === req.query.q) {
+          toReturn = d.captionTracks[i]['script'];
+        }
+        // else {
+        //  toReturn = null;
+        // }
+      }      
+
+      res.writeHead(200, {
+        'Content-Type': 'text/plain; charset=utf-8'
+      });
+
+      if(toReturn != null) {
+        // res.end(
+        //   JSON.stringify(toReturn.toString(), null, 4) + "\n\n" 
+        //   // JSON.stringify(d.captionTracks[0]['script'], null, 4) + "\n\n" 
+        // );
+
+        var dataToSend;
+
+        // spawn new child process to call the python script
+        // note: on deploying web, 1st param can be one of python, py, or python3
+        // cuz python command on localhost is py
+        // const python = spawn('py', [__dirname + '/script.py']);
+
+        // const python = spawn('python', ['./script.py']);
+        // const python = spawn('py',[__dirname + "/script.py", toReturn] );
+        // const python = spawn('py',[__dirname + "/script.py", toReturn.toString()] );
+        const python = spawn('py',[__dirname + "/script.py", 
+        JSON.stringify(toReturn.toString(), null, 4)] );
+        
+        // collect data from script
+        python.stdout.on('data', function (data) {
+          console.log('Pipe data from python script ...');
+          dataToSend = data.toString();
+        });
+          // in close event we are sure that stream from child process is closed
+        python.on('close', (code) => {
+          console.log(`child process close all stdio with code ${code}`);
+          
+          // send data to browser
+          console.log(dataToSend)
+          res.end(dataToSend);
+          // res.send(dataToSend)
+        });
+
+        
+      }else {
+        toReturn = "Please provide a valid query parameter\n" +
+        "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+        "Check the vssId you want at the default info of the document:\n" +
+        "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
+        "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
+        res.end(toReturn);
+      }
+     
+    } 
+  }).lean();
+
+   //https://medium.com/swlh/run-python-script-from-node-js-and-send-data-to-browser-15677fcf199f
+  //https://javascript.plainenglish.io/how-to-run-python-script-using-node-js-6b351169e916
+  // var dataToSend;
+
+  // // spawn new child process to call the python script
+  // // note: on deploying web, 1st param can be one of python, py, or python3
+  // // cuz python command on localhost is py
+  // // const python = spawn('py', [__dirname + '/script.py']);
+
+  // // const python = spawn('python', ['./script.py']);
+  // const python = spawn('py',[__dirname + "/script.py", req.query.q] );
+  
+  // // collect data from script
+  // python.stdout.on('data', function (data) {
+  //   console.log('Pipe data from python script ...');
+  //   dataToSend = data.toString();
+  // });
+  //   // in close event we are sure that stream from child process is closed
+  // python.on('close', (code) => {
+  //   console.log(`child process close all stdio with code ${code}`);
+    
+  //   // send data to browser
+  //   console.log(dataToSend)
+  //   res.send(dataToSend)
+  // });
+
+  // //https://www.geeksforgeeks.org/run-python-script-node-js-using-child-process-spawn-method/
+  // // Use child_process.spawn method from 
+  //   // child_process module and assign it
+  //   // to variable spawn
+  //   var spawn = require("child_process").spawn;
+      
+  //   // Parameters passed in spawn -
+  //   // 1. type_of_script
+  //   // 2. list containing Path of the script
+  //   //    and arguments for the script 
+      
+  //   // E.g : http://localhost:3000/name?firstname=Mike&lastname=Will
+  //   // so, first name = Mike and last name = Will
+  //   var process = spawn('python',["./script.py",
+  //                           req.query.f,
+  //                           req.query.l] );
+  
+  //   // Takes stdout data from script which executed
+  //   // with arguments and send this data to res object
+  //   process.stdout.on('data', function(data) {
+  //       res.send(data.toString());
+  //   } )
+
+
+
+  // //https://www.npmjs.com/package/python-shell
+
+  // let options = {
+  //   mode: 'text',
+  //   pythonPath: '',
+  //   pythonOptions: ['-u'], // get print results in real-time
+  //   scriptPath: 'path',
+  //   // args: ['arg1', 'arg2']
+  // };
+
+  // PythonShell.run('script.py', options, function (err) {
+  //   if (err) throw err;
+  //   console.log('finished');
+  // });
+};
+
+
 
 exports.postDoc = function (req, res) {
 
