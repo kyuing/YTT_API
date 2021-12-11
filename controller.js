@@ -4,10 +4,13 @@ const URL = require("./models/url"),
   Handlebars = require("handlebars"),
   // querystring = require('querystring'),
   // url = require('url'),
+  PDFGenerator = require('pdfkit'),
+  puppeteer = require("puppeteer"),
   fs = require("fs");
 
 
 const API_KEY = process.env.YT_DATA_API_KEY;
+// const {cp} = require('child_process');
 const {spawn} = require('child_process');
 const {PythonShell} = require('python-shell');
 
@@ -239,15 +242,56 @@ exports.getScript = function (req, res) {
         // }
       }      
 
-      res.writeHead(200, {
-        'Content-Type': 'text/plain; charset=utf-8'
-      });
-
       if(toReturn != null) {
-        res.end(
-          JSON.stringify(toReturn.toString(), null, 4) + "\n\n" 
-          // JSON.stringify(d.captionTracks[0]['script'], null, 4) + "\n\n" 
-        );
+        //add this functionality to documentation
+        if(req.query.pdf === "true") {
+          // /*return*/ res.redirect("/ytt/api/" + d._id + "/paraphrase?q=" + toReturn);
+
+          //https://levelup.gitconnected.com/generating-pdf-in-nodejs-201e8d9fa3d8
+          let output = new PDFGenerator;
+          output.pipe(fs.createWriteStream('script.pdf'));
+          output.text(toReturn);
+          output.end();
+
+          //https://nodejs.org/en/knowledge/advanced/streams/how-to-use-fs-create-read-stream/
+          // The filename is simple the local directory and tacks on the requested url
+          var filename = __dirname + '/script.pdf';
+
+          // This line opens the file as a readable stream
+          var readStream = fs.createReadStream(filename);
+
+          // This will wait until we know the readable stream is actually valid before piping
+          readStream.on('open', function () {
+            // This just pipes the read stream to the response object 
+            // (which goes to the client)
+            // the resulting page deos not download automatically
+            //it just gives a downloadable pdf web page to users.
+            readStream.pipe(res);
+
+            //delete the pdf file as soon as streamed to browser
+            //(may need this or not.)
+            var filename = 'script.pdf';
+            fs.unlink(filename, (err) => {
+              console.log('File deleted ...');
+            });
+          });
+
+          // This catches any errors that happen while creating the readable stream (usually invalid names)
+          readStream.on('error', function(err) {
+            res.end(err);
+          });
+
+        } else {
+          res.writeHead(200, {
+            'Content-Type': 'text/plain; charset=utf-8'
+          });
+          res.end(toReturn)
+          // res.end(
+          //   JSON.stringify(toReturn.toString(), null, 4) + "\n\n" 
+          //   // JSON.stringify(d.captionTracks[0]['script'], null, 4) + "\n\n" 
+          // );
+        }
+        
 
         
       }else {
@@ -343,149 +387,219 @@ exports.getDocs = function (req, res) {
     });
 };
 
-exports.getParaphrase = function (req, res) {
+//in progress...
+// //https://medium.com/@gkverma1094/child-process-in-nodejs-b2cd17c76830
+// //search for childprocess in nodejs to see any other functions
+// exports.getParaphrase = function (req, res) {
 
-  console.log("\nin the function getPegasus\n")
+//   console.log("\nin the function getParaphrase\n")
+//   console.log("requested vssId: " + req.query.q)
 
-  console.log("requested vssId: " + req.query.q)
+//   URL.findOne({ _id: req.params.id }, function (err, data) {
+//     if (err) {
+//       console.log("err at getDoc: " + err)
+//       // res.status(400).json(err);
+//       return res.redirect("/error/" + "No data found")
+//     }
 
-  URL.findOne({ _id: req.params.id }, function (err, data) {
-    if (err) {
-      console.log("err at getDoc: " + err)
-      // res.status(400).json(err);
-      return res.redirect("/error/" + "No data found")
-    }
-
-    if (data) {
+//     if (data) {
       
-      const d = JSON.parse(JSON.stringify(data));
-      let toReturn;
-      for (var i = 0; i < d.captionTracks.length; i++) {
-        if(d.captionTracks[i]['vssId'] === req.query.q) {
-          toReturn = d.captionTracks[i]['script'];
-        }
-        // else {
-        //  toReturn = null;
-        // }
-      }      
+//       const d = JSON.parse(JSON.stringify(data));
+//       let toReturn;
+//       // let toReturn = "";
+//       for (var i = 0; i < d.captionTracks.length; i++) {
+//         if(d.captionTracks[i]['vssId'] === req.query.q) {
+//           toReturn = d.captionTracks[i]['script'];
+//         }
+//         // else {
+//         //  toReturn = null;
+//         // }
+//       }      
 
-      res.writeHead(200, {
-        'Content-Type': 'text/plain; charset=utf-8'
-      });
 
-      if(toReturn != null) {
-        // res.end(
-        //   JSON.stringify(toReturn.toString(), null, 4) + "\n\n" 
-        //   // JSON.stringify(d.captionTracks[0]['script'], null, 4) + "\n\n" 
-        // );
+//       toReturn = toReturn.replace(/\n/g, " ");
 
-        var dataToSend;
+//       // try {
+//       //   fs.writeFileSync('script.txt', JSON.parse(JSON.stringify(toReturn.toString())))
+//       // } catch (err) {
+//       //   console.error(err)
+//       // }
 
-        // spawn new child process to call the python script
-        // note: on deploying web, 1st param can be one of python, py, or python3
-        // cuz python command on localhost is py
-        // const python = spawn('py', [__dirname + '/script.py']);
+//       if(toReturn != null) {
+//       // if({toReturn} != null) {
 
-        // const python = spawn('python', ['./script.py']);
-        // const python = spawn('py',[__dirname + "/script.py", toReturn] );
-        // const python = spawn('py',[__dirname + "/script.py", toReturn.toString()] );
-        const python = spawn('py',[__dirname + "/script.py", 
-        JSON.stringify(toReturn.toString(), null, 4)] );
+//         // var largeDataSet = [];
+//         // // spawn new child process to call the python script
+//         // const python = spawn('py', ['script.py'], toReturn.toString());
+//         // // collect data from script
+//         // python.stdout.on('data', function (data) {
+//         //   console.log('Pipe data from python script ...');
+//         //   largeDataSet.push(data);
+//         // });
+//         // // in close event we are sure that stream is from child process is closed
+//         // python.on('close', (code) => {
+//         // console.log(`child process close all stdio with code ${code}`);
+//         // // send data to browser
+//         // res.send(largeDataSet.join(""))
+//         // });
+       
+//         // //https://www.npmjs.com/package/python-shell
+//         // let pyshell = new PythonShell('script.py');
+//         // // sends a message to the Python script via stdin
+//         // pyshell.send('hello');
+//         // pyshell.on('message', function (message) {
+//         //   // received a message sent from the Python script (a simple "print" statement)
+//         //   console.log(message);
+//         // });
+//         // // end the input stream and allow the process to exit
+//         // pyshell.end(function (err,code,signal) {
+//         //   if (err) throw err;
+//         //   console.log('The exit code was: ' + code);
+//         //   console.log('The exit signal was: ' + signal);
+//         //   console.log('finished');
+//         // });
+
+
+//         // /***********************************************************************
+//         // console.log(toReturn)
+//         let textParams = [];
+//         // let textParams = "hello world. hi hi";
+//         textParams = toReturn.toString();
+       
+//         // textParams.push(toReturn.toString());
+//         //  console.log("textParams.length: " + textParams.length)
+//         //  const a = Array.from(textParams);
+//         //  console.log(a);
+
+//         // console.log(textParams);
+//         // console.log(textParams[0]);
+//         // toReturn = "hello hi hi";
+//         // const textParams = toReturn;
+//         // textParams = JSON.stringify(toReturn.toString(), null, 4);
+//         var dataToSend;
+
+//         // spawn new child process to call the python script
+//         // note: on deploying web, 1st param can be one of python, py, or python3
+//         // cuz python command on localhost is py
+//         // const python = spawn('py', [__dirname + '/script.py']);
+
+//         // console.log(toReturn)
+//         // const python = spawn('python', ['./script.py']);
+       
+//         // if(toReturn.contains('\n')) {}
+//         // let textParams = toReturn.replaceAll(/\n/g, ' ');
+//         // console.log(toReturn);
+
+//         //the problem is that the 3rd parameter must be a pure string value....
+//         // req.query.q = textParams[0];
+//         // console.log(req.query.q);
+//         // const python = spawn('py',[__dirname + "/script.py"] );
+//         const python = spawn('py', [__dirname + '/script.py', toReturn] );
+//         // const python = spawn('py',[__dirname + 'script.py', JSON.stringify(toReturn.toString(), null, 4)] );
+//         // const python = spawn('py',[__dirname + "/script.py", textParams[0]] );
+//         // const python = spawn('py',[__dirname + "/script.py", toReturn.toString()] );
+//         // const python = spawn('py',[__dirname + "/script.py", toReturn[0]] );
+//         // const python = spawn('py',[__dirname + "/script.py", JSON.stringify({toReturn}.toString(), null, 4)] );
+//         // const python = spawn('py',[__dirname + "/script.py", 
+//         // "In this video, I will be showing you how to build a stock price web application in Python using the Streamlit and yfinance library. The app will be able to retrieve company information as well as the stock price data for S and P 500 companies. All of this in less than 50 lines of code."
+//       ////  JSON.stringify(toReturn.toString(), null, 4)
+//       // ] );
         
-        // collect data from script
-        python.stdout.on('data', function (data) {
-          console.log('Pipe data from python script ...');
-          dataToSend = data.toString();
-        });
-          // in close event we are sure that stream from child process is closed
-        python.on('close', (code) => {
-          console.log(`child process close all stdio with code ${code}`);
+//         // collect data from script
+//         python.stdout.on('data', function (data) {
+//           console.log('Pipe data from python script ...');
+//           dataToSend = data.toString();
+//         });
+//           // in close event we are sure that stream from child process is closed
+//         python.on('close', (code) => {
+//           console.log(`child process close all stdio with code ${code}`);
           
-          // send data to browser
-          console.log(dataToSend)
-          res.end(dataToSend);
-          // res.send(dataToSend)
-        });
+//           // send data to browser
+//           // console.log(dataToSend)
+//           res.end(dataToSend);
+//           // res.send(dataToSend)
+//         });
+//         // ***************************************************************************/
 
         
-      }else {
-        toReturn = "Please provide a valid query parameter\n" +
-        "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
-        "Check the vssId you want at the default info of the document:\n" +
-        "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
-        "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
-        res.end(toReturn);
-      }
+//       }else {
+//         toReturn = "Please provide a valid query parameter\n" +
+//         "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+//         "Check the vssId you want at the default info of the document:\n" +
+//         "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
+//         "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
+//         res.end(toReturn);
+//       }
      
-    } 
-  }).lean();
+//     } 
+//   }).lean();
 
-   //https://medium.com/swlh/run-python-script-from-node-js-and-send-data-to-browser-15677fcf199f
-  //https://javascript.plainenglish.io/how-to-run-python-script-using-node-js-6b351169e916
-  // var dataToSend;
+//    //https://medium.com/swlh/run-python-script-from-node-js-and-send-data-to-browser-15677fcf199f
+//   //https://javascript.plainenglish.io/how-to-run-python-script-using-node-js-6b351169e916
+//   // var dataToSend;
 
-  // // spawn new child process to call the python script
-  // // note: on deploying web, 1st param can be one of python, py, or python3
-  // // cuz python command on localhost is py
-  // // const python = spawn('py', [__dirname + '/script.py']);
+//   // // spawn new child process to call the python script
+//   // // note: on deploying web, 1st param can be one of python, py, or python3
+//   // // cuz python command on localhost is py
+//   // // const python = spawn('py', [__dirname + '/script.py']);
 
-  // // const python = spawn('python', ['./script.py']);
-  // const python = spawn('py',[__dirname + "/script.py", req.query.q] );
+//   // // const python = spawn('python', ['./script.py']);
+//   // const python = spawn('py',[__dirname + "/script.py", req.query.q] );
   
-  // // collect data from script
-  // python.stdout.on('data', function (data) {
-  //   console.log('Pipe data from python script ...');
-  //   dataToSend = data.toString();
-  // });
-  //   // in close event we are sure that stream from child process is closed
-  // python.on('close', (code) => {
-  //   console.log(`child process close all stdio with code ${code}`);
+//   // // collect data from script
+//   // python.stdout.on('data', function (data) {
+//   //   console.log('Pipe data from python script ...');
+//   //   dataToSend = data.toString();
+//   // });
+//   //   // in close event we are sure that stream from child process is closed
+//   // python.on('close', (code) => {
+//   //   console.log(`child process close all stdio with code ${code}`);
     
-  //   // send data to browser
-  //   console.log(dataToSend)
-  //   res.send(dataToSend)
-  // });
+//   //   // send data to browser
+//   //   console.log(dataToSend)
+//   //   res.send(dataToSend)
+//   // });
 
-  // //https://www.geeksforgeeks.org/run-python-script-node-js-using-child-process-spawn-method/
-  // // Use child_process.spawn method from 
-  //   // child_process module and assign it
-  //   // to variable spawn
-  //   var spawn = require("child_process").spawn;
+//   // //https://www.geeksforgeeks.org/run-python-script-node-js-using-child-process-spawn-method/
+//   // // Use child_process.spawn method from 
+//   //   // child_process module and assign it
+//   //   // to variable spawn
+//   //   var spawn = require("child_process").spawn;
       
-  //   // Parameters passed in spawn -
-  //   // 1. type_of_script
-  //   // 2. list containing Path of the script
-  //   //    and arguments for the script 
+//   //   // Parameters passed in spawn -
+//   //   // 1. type_of_script
+//   //   // 2. list containing Path of the script
+//   //   //    and arguments for the script 
       
-  //   // E.g : http://localhost:3000/name?firstname=Mike&lastname=Will
-  //   // so, first name = Mike and last name = Will
-  //   var process = spawn('python',["./script.py",
-  //                           req.query.f,
-  //                           req.query.l] );
+//   //   // E.g : http://localhost:3000/name?firstname=Mike&lastname=Will
+//   //   // so, first name = Mike and last name = Will
+//   //   var process = spawn('python',["./script.py",
+//   //                           req.query.f,
+//   //                           req.query.l] );
   
-  //   // Takes stdout data from script which executed
-  //   // with arguments and send this data to res object
-  //   process.stdout.on('data', function(data) {
-  //       res.send(data.toString());
-  //   } )
+//   //   // Takes stdout data from script which executed
+//   //   // with arguments and send this data to res object
+//   //   process.stdout.on('data', function(data) {
+//   //       res.send(data.toString());
+//   //   } )
 
 
 
-  // //https://www.npmjs.com/package/python-shell
+//   // //https://www.npmjs.com/package/python-shell
 
-  // let options = {
-  //   mode: 'text',
-  //   pythonPath: '',
-  //   pythonOptions: ['-u'], // get print results in real-time
-  //   scriptPath: 'path',
-  //   // args: ['arg1', 'arg2']
-  // };
+//   // let options = {
+//   //   mode: 'text',
+//   //   pythonPath: '',
+//   //   pythonOptions: ['-u'], // get print results in real-time
+//   //   scriptPath: 'path',
+//   //   // args: ['arg1', 'arg2']
+//   // };
 
-  // PythonShell.run('script.py', options, function (err) {
-  //   if (err) throw err;
-  //   console.log('finished');
-  // });
-};
+//   // PythonShell.run('script.py', options, function (err) {
+//   //   if (err) throw err;
+//   //   console.log('finished');
+//   // });
+// };
 
 
 
