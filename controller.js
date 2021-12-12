@@ -243,18 +243,24 @@ exports.getScript = function (req, res) {
       }      
 
       if(toReturn != null) {
-        //add this functionality to documentation
+        
         if(req.query.pdf === "true") {
           // /*return*/ res.redirect("/ytt/api/" + d._id + "/paraphrase?q=" + toReturn);
 
+          //https://pdfkit.org/
           //https://levelup.gitconnected.com/generating-pdf-in-nodejs-201e8d9fa3d8
+
           let output = new PDFGenerator;
-          output.pipe(fs.createWriteStream('script.pdf'));
-          output.text(toReturn);
+          output.pipe(fs.createWriteStream('script.pdf', { encoding: 'utf8' }));
+
+          //writing to pdf is working, but some langs such as korean or japanese
+          //are broken.
+          // output.text(toReturn);
+          output.text(toReturn.toString());
+          // output.text(JSON.stringify(toReturn.toString(), null, 4));
           output.end();
 
           //https://nodejs.org/en/knowledge/advanced/streams/how-to-use-fs-create-read-stream/
-          // The filename is simple the local directory and tacks on the requested url
           var filename = __dirname + '/script.pdf';
 
           // This line opens the file as a readable stream
@@ -264,12 +270,17 @@ exports.getScript = function (req, res) {
           readStream.on('open', function () {
             // This just pipes the read stream to the response object 
             // (which goes to the client)
-            // the resulting page deos not download automatically
-            //it just gives a downloadable pdf web page to users.
-            readStream.pipe(res);
+            // The resulting page deos not download anything automatically
+            // instead, it just gives a downloadable pdf web page to users.
+            // res.writeHead(200, {
+            //   'Content-Type': 'text/plain; charset=utf-8'
+            // });
+            readStream.pipe(
+              res
+              // res.end(toReturn)
+            );
 
             //delete the pdf file as soon as streamed to browser
-            //(may need this or not.)
             var filename = 'script.pdf';
             fs.unlink(filename, (err) => {
               console.log('File deleted ...');
