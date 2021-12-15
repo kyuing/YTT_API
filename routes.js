@@ -30,7 +30,7 @@ router.get("/ytt/api/:id/scripts", ctrl.getScripts);  //get scripts by all langu
 router.get("/ytt/api/:id/script", ctrl.getScript);  //get a script by a language in a doc. just add ?q=vssId goes here
 
 //https://stackoverflow.com/questions/49728793/nodejs-express-router-resolves-to-wrong-path/49729687
-// router.get("/ytt/api/:id/paraphrase", ctrl.getParaphrase);  //?q= vssId
+router.get("/ytt/api/:id/paraphrase", ctrl.getParaphrase);  //?q= vssId
 
 
 router.get("/ytt/api/:id/numoflangs", ctrl.getAvailableLang);

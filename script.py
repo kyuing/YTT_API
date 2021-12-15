@@ -32,8 +32,32 @@ import json
 
 
 # print(contents)
+# context = sys.argv[1].encode(encoding = 'UTF-8', errors = 'strict')
+# print("input\n" + context.toString())
 
-print("input\n" + sys.argv[1])
+
+rawInput = sys.argv[1]
+input = rawInput
+# input = rawInput.replace(u"\u00EF", "\'")  # not working
+# input = sys.argv[1].replace(u"\u00EF", "\'") # not working
+print("input\n" + input)
+
+
+# # str.decode("utf-8")
+# # input = sys.argv[1].decode("utf-8").replace(u"\uFFFD", "\'").encode("utf-8")
+# # str.decode("utf-8").replace(u"\u2022", "*")
+
+# # rawInput = "For some reason my �double quotes� were lost.";
+# # input = sys.argv[1].replace(u'ï¿½ï¿½', '\'')
+
+# # \u00ef   
+# input = sys.argv[1].replace(u"\u00EF", "XXX")
+# # input = sys.argv[1].replace(u'\uFFFD', '\'')
+# # input = rawInput.replace(u'\uFFD', '\'')
+# # input = rawInput.decode("utf-8").replace(u"\uFFFD", "\'").encode("utf-8")
+# print("input\n" + input)
+# # print("input\n" + sys.argv[1])
+
 
 # sys.stdout.flush()
 

@@ -377,6 +377,9 @@ exports.getAvailableLang = function (req, res) {
 //since getDocs function is not in the main use, alerting is not implemented here.
 //if necessary to implement alert in relation to error or no data at getDocs, refer to the function getDoc 
 exports.getDocs = function (req, res) {
+
+  // let toReturn = "";
+
   URL.find({}).lean().exec(function (err, data) {
       if (err) {
         res.status(400).json(err);
@@ -397,6 +400,106 @@ exports.getDocs = function (req, res) {
       }
     });
 };
+
+exports.getParaphrase = function (req, res) {
+
+  console.log("\nin the function getParaphrase\n")
+  console.log("requested vssId: " + req.query.q)
+
+  URL.findOne({ _id: req.params.id }, function (err, data) {
+    
+    let toReturn;
+
+    if (err) {
+      console.log("err at getDoc: " + err)
+      // res.status(400).json(err);
+      return res.redirect("/error/" + "No data found")
+    }
+
+    if (data) {
+      
+      const d = JSON.parse(JSON.stringify(data));
+      // let toReturn;
+      // let toReturn = "";
+      for (var i = 0; i < d.captionTracks.length; i++) {
+        if(d.captionTracks[i]['vssId'] === req.query.q) {
+          toReturn = d.captionTracks[i]['script'];
+        }
+        // else {
+        //  toReturn = null;
+        // }
+      }      
+
+
+      
+
+      if(toReturn != null) {
+
+
+        let dataToSend = "";
+        
+        // spawn new child process to call the python script
+        // const python = spawn('py', ['script.py', 'hi from node js']);  //working
+        const python = spawn('py', ['script.py', toReturn.toString()]);  //working, but chars are not decoded
+        // const python = spawn('py', ['script.py', JSON.stringify(toReturn.toString(), null, 4)]);
+        
+        // collect data from script
+        python.stdout.on('data', function (data) {
+         
+         dataToSend = data.toString();
+         // const s = JSON.parse(JSON.stringify({data}.toString()));
+         //  dataToSend += String(data);
+         //  dataToSend = JSON.parse(JSON.stringify(data.toString()));
+         //  if (dataToSend.includes('½')) { dataToSend.replace(/½/g, "\'"); }
+         //  dataToSend = JSON.parse(JSON.stringify({data}.toString()));
+         // dataToSend = s[0][0].toString();
+
+         console.log('Pipe data from python script ...');
+
+        });
+        
+        // in close event we are sure that stream from child process is closed
+        python.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+               
+        // res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'}); //gives such a raw html encoding
+        res.end(dataToSend);  //gives res related encoding
+
+        // // dataToSend.replace(/ï¿½ï¿½/g, "XXXXX");
+        // // dataToSend.replace(/\u+FFFD/g, "XXXXX");
+        // // if (dataToSend.includes('½')) { dataToSend.replaceAll(/½/g, "\'"); }
+        // // let regexp = new RegExp(/.*?(ï¿½ï¿½)/);
+        // // // regexp = new RegExp(/.*?<title>(.*?)</title>.*/);  //error in formatting
+
+        // // let match = regexp.exec(dataToSend); 
+        // // if (match) {
+        // //   dataToSend.replace(regexp, "aaaaaaaaaa");
+        // // }
+        // res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'}); //gives such a raw html encoding
+        // // res.setEncoding('utf8');
+        // // res.charset = 'utf-8';
+        // res.end(dataToSend);  //gives res related encoding
+        
+        // // res.send(dataToSend);
+        
+
+        });
+      
+        
+      }else {
+        toReturn = "Please provide a valid query parameter\n" +
+        "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+        "Check the vssId you want at the default info of the document:\n" +
+        "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
+        "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
+        res.end(toReturn);
+      }
+     
+    } 
+  }).lean();
+};
+
+
 
 //in progress...
 // //https://medium.com/@gkverma1094/child-process-in-nodejs-b2cd17c76830
