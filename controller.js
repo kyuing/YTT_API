@@ -436,11 +436,15 @@ exports.getParaphrase = function (req, res) {
       if(toReturn != null) {
 
 
-        let dataToSend = "";
+        // toReturn = toReturn.toString().replace(/\"/g, "");
+        // toReturn = toReturn.toString().replace(/'/g, "\'");
+        let dataToSend;
+        // let dataToSend = "";
         
         // spawn new child process to call the python script
         // const python = spawn('py', ['script.py', 'hi from node js']);  //working
         const python = spawn('py', ['script.py', toReturn.toString()]);  //working, but chars are not decoded
+        // const python = spawn('py', ['script.py', toReturn.toString()]);  //working, but chars are not decoded
         // const python = spawn('py', ['script.py', JSON.stringify(toReturn.toString(), null, 4)]);
         
         // collect data from script
@@ -715,43 +719,30 @@ exports.getParaphrase = function (req, res) {
 //   // });
 // };
 
+exports.postDocByForm = function (req, res) {
 
+  console.log("req.body.full: " + req.body.ffull)
 
-exports.postDoc = function (req, res) {
-
-  //prototype
-  // const url = JSON.parse(JSON.stringify(req.body.url));
-  // console.log("console.log(url) at POST: " + url);
-
-  //only one query 
-  // console.log("\nconsole.log(req.query.q) at POST: " + req.query.q);
-  // const url = JSON.parse(JSON.stringify(req.query.q));
-  // console.log("console.log(url) at POST: " + url);
-
-  //1st q = youtube video url
-  //2nd q = -full or undefined
-  // const url = JSON.parse(JSON.stringify(req.query.q));
-  // console.log("console.log(url) at POST: " + url);
-
-  //https://stackoverflow.com/questions/39530988/getting-request-query-parameters-count
-  //https://www.codegrepper.com/code-examples/javascript/req+query+params+express   //https://(www)?(\.)?(m\.)?youtu.*
-  // console.log(Object.keys(req.query.q).length);  //works but it's just better to use each of specific q names
-  //however, you need url validation using regex e.g. https://www.w3schools.com/jsref/jsref_match.asp
-
-  
   let url;
-  let isFullDocRes;
   
-  if(req.query.full === "true") {
-    console.log("\nconsole.log(req.query.url, req.query.full) at POST: " + req.query.url + ", " + req.query.full + "\n")
-    url = JSON.parse(JSON.stringify(req.query.url));
-    isFullDocRes = true;
-    // console.log("console.log(url) at POST: " + url);
-  }else {
-    console.log("\nconsole.log(req.query.url) at POST: " + req.query.url + "\n");
-    url = JSON.parse(JSON.stringify(req.query.url));
-    isFullDocRes = false;
-  }
+  //full response
+  let isFullDocRes = true;  //false if default response is necessary.
+    console.log("\nconsole.log(req.body.url) at POST: " + req.body.url + "\n");
+    url = JSON.parse(JSON.stringify(req.body.url));
+  
+
+  // if(req.body.ffull === "true") {
+  //   console.log("\nconsole.log(req.body.url, req.body.full) at POST: " + req.body.url + ", " + req.body.full + "\n")
+  //   url = JSON.parse(JSON.stringify(req.body.url));
+  //   isFullDocRes = true;
+  //   // console.log("console.log(url) at POST: " + url);
+  // }else {
+  //   console.log("\nconsole.log(req.body.url) at POST: " + req.body.url + "\n");
+  //   url = JSON.parse(JSON.stringify(req.body.url));
+  //   isFullDocRes = false;
+  // }
+
+  
   
 
   URL.findOne({ url: url }, function (err, data) {
@@ -869,6 +860,279 @@ exports.postDoc = function (req, res) {
                           if (texts[i][j].utf8 != null || texts[i][j].utf8 != undefined) {
                             // t += texts[i][j].utf8;
                             t += texts[i][j].utf8 + " ";
+                            // if(texts[i][j].utf8) {
+                            //   t += texts[i][j].utf8.replace(/'/g, "\'")
+                            // }
+                            
+                          }
+                        }
+                      }
+                    }
+                  }
+                 
+                  //asr(Automatic speech recognition) is null.
+                  if(kind === null || kind === undefined) {
+                    captionTrack.push(
+                      // {name: name},
+                      {
+                        baseUrl: baseUrlFmtJson3,
+                        name: name,
+                        vssId: vssId,
+                        languageCode: languageCode,
+                        isTranslatable: isTranslatable,
+                        script: t
+                      }
+                    );
+                  }
+
+                  // asr(Automatic speech recognition) is NOT null.
+                  if(kind != null || kind != undefined) {
+                    captionTrack.push(
+                      // {name: name},
+                      {
+                        baseUrl: baseUrlFmtJson3,
+                        name: name,
+                        vssId: vssId,
+                        languageCode: languageCode,
+                        kind: kind,
+                        isTranslatable: isTranslatable,
+                        script: t
+                      }
+                    );
+                  }
+                  t = "";
+
+                  // console.log("\n___________________________________________________\n");  
+                  // console.log("captionTrack.length: " + captionTrack.length);
+                  // console.log("obj.parsed.length: " + obj.parsed.length);
+                  // console.log(captionTrack);
+
+                  
+                  //we collected all the language available
+                  if(captionTrack.length === obj.parsed.length) {
+                    // let ct = JSON.stringify(captionTrack);
+                    // let ct = JSON.parse(JSON.stringify(captionTrack));
+                    let new_data = new URL(
+                      { 
+                        url: url, 
+                        videoId: videoId, 
+                        // tt_url: tt_url, 
+                        title: title, 
+                        captionTracks: captionTrack
+                        // captionTracks: ct
+                        // captionTracks: JSON.parse(JSON.stringify(captionTrack))
+                      }
+                    );
+                    console.log("\n___________________________________________________\n");  
+                    console.log(
+                      "\nThe following data is ready to POST:" + "\n" +
+                      "url: " + /*new_data.*/url + "\n" +
+                      "videoId: " + videoId + "\n" +
+                      // "timedtext url: " + new_data.tt_url + "\n" +
+                      "title: " + title + "\n" +
+                      // "transcript: " + new_data.t  ////undefiend but saved to db
+                      "captionTracks: " + captionTrack + "\n" 
+                    ); 
+
+                    new_data.save(function (err, nb) {
+                      if (err) {
+                        res.status(400).json(err);
+                      }
+                      console.log("POST to URL collection successfully");
+                      if(!isFullDocRes) {
+                        res.redirect("/ytt/api/" + new_data.id);
+                      }else {
+                        res.redirect("/ytt/api/" + new_data.id + "?full=true");
+                      }
+                      
+                      // res.redirect("/ytt/api/" + new_data.id);  //to getDoc
+
+                      // res.redirect("/ytt/" + new_data.id);  //to getDoc
+                      // res.redirect("/ytt/" + new_data.id + "#transcription");  //works but ignores css
+                      // res.redirect("/ytt_all"); //to getDocs
+
+                    });
+
+                  }
+
+
+              } catch (error) {
+                console.log(error);
+              }
+            })();
+
+        }//end of for loop
+      
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+
+    }
+
+  }).lean();
+
+};
+
+exports.postDoc = function (req, res) {
+
+  //prototype
+  // const url = JSON.parse(JSON.stringify(req.body.url));
+  // console.log("console.log(url) at POST: " + url);
+
+  //only one query 
+  // console.log("\nconsole.log(req.query.q) at POST: " + req.query.q);
+  // const url = JSON.parse(JSON.stringify(req.query.q));
+  // console.log("console.log(url) at POST: " + url);
+
+  //1st q = youtube video url
+  //2nd q = -full or undefined
+  // const url = JSON.parse(JSON.stringify(req.query.q));
+  // console.log("console.log(url) at POST: " + url);
+
+  //https://stackoverflow.com/questions/39530988/getting-request-query-parameters-count
+  //https://www.codegrepper.com/code-examples/javascript/req+query+params+express   //https://(www)?(\.)?(m\.)?youtu.*
+  // console.log(Object.keys(req.query.q).length);  //works but it's just better to use each of specific q names
+  //however, you need url validation using regex e.g. https://www.w3schools.com/jsref/jsref_match.asp
+
+  // console.log("req.body.req_type: " + req.body.req_type)
+
+  let url;
+  let isFullDocRes;
+  
+  if(req.query.full === "true") {
+    console.log("\nconsole.log(req.query.url, req.query.full) at POST: " + req.query.url + ", " + req.query.full + "\n")
+    url = JSON.parse(JSON.stringify(req.query.url));
+    isFullDocRes = true;
+    // console.log("console.log(url) at POST: " + url);
+  }else {
+    console.log("\nconsole.log(req.query.url) at POST: " + req.query.url + "\n");
+    url = JSON.parse(JSON.stringify(req.query.url));
+    isFullDocRes = false;
+  }
+
+  
+  
+
+  URL.findOne({ url: url }, function (err, data) {
+    if (err) {
+      res.status(400).json(err);
+    }
+
+    if (data) { 
+      console.log(
+        "\nThe requested url already exists in db:" +
+          "\n" +
+          "_id: " +
+          data._id +
+          "\n" +
+          "url:" +
+          data.url
+      );
+      // console.log(JSON.parse(JSON.stringify(data.body.id)));
+      // res.redirect("/ytt/" + data._id);  //prev
+      if(!isFullDocRes) {
+        res.redirect("/ytt/api/" + data._id);
+      }else {
+        res.redirect("/ytt/api/" + data._id + "?full=true");
+      }
+        
+    } 
+    else {  
+  
+      rp(url).then(function (html) {
+
+        let regexp, match, matchOne, tt_url, filter;
+
+        //https://stackoverflow.com/questions/41984107/using-regex-to-get-title/41984573
+        //https://regex101.com/r/piwm5H/1
+        let title, end;
+        regexp = new RegExp(/<title.*?>(.*)<\/title>/);
+        // regexp = new RegExp(/.*?<title>(.*?)</title>.*/);  //error in formatting
+
+        match = regexp.exec(html); //row html entity
+        // match = regexp.exec(html.toString());  //not shown to string
+        if (!match) {
+          console.log("msg at title regexp: No title found");
+          title = "";
+        }
+        title = match[1];
+        if(title.endsWith(" - YouTube")) {
+          end = title.length - 10;  //remove " - youtube"
+          if(end != -1) {
+            title = title.substring(0, end);  
+          }
+        }
+        console.log("\nconsole.log(title): " + title);
+
+        let captionTrack = [];
+        let texts = [], t = "";
+
+        //let isLegacyMode = false;
+
+        //you can download the scraped html to page in detail.
+        regexp = new RegExp(/captionTracks.*?(youtube.com\/api\/timedtext.*?)]/);
+        match = regexp.exec(html);
+        if (!match) {
+
+          regexp = new RegExp(/playerCaptionsTracklistRenderer.*?(youtube.com\/api\/timedtext.*?)]/);
+          match = regexp.exec(html);
+
+          //here, you can put the legacy regexp code that extracts the first matching timedtext url only
+          //so that you can give users at least one transcript in case error is.
+          //implement it after most of things are done or when having spare time.
+          //but not really necessary for now.
+
+          if (!match) {
+            console.log("msg at postDoc: No captions found");
+            return res.redirect("/error/" + "No captions found")
+          }
+        }
+        // console.log(match[0]);
+        
+        let parsed = JSON.parse(match[0].substring(match[0].indexOf("["), match[0].length));
+        // let parsed = JSON.parse(match[0].substring(15, match[0].length));
+        console.log(parsed);
+
+        let obj = {parsed};
+        
+        //https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url?answertab=votes#tab-top
+        let videoId, ampersandPosition;
+        videoId = obj.parsed[0]['baseUrl'].split('v=')[1];
+        ampersandPosition = videoId.indexOf('&');
+        if(ampersandPosition != -1) {
+          videoId = videoId.substring(0, ampersandPosition);
+        }
+        console.log("\nconsole.log(videoid); " + videoId + "\n")
+
+        for(var x=0; x<obj.parsed.length; x++) {
+        
+          let baseUrlFmtJson3 = obj.parsed[x]['baseUrl'].replace(/,/g, '%2C') + "&fmt=json3";
+          let name = obj.parsed[x]['name'].simpleText;
+          let vssId = obj.parsed[x]['vssId'];
+          let languageCode = obj.parsed[x]['languageCode'];
+          let kind = obj.parsed[x]['kind'];
+          let isTranslatable = obj.parsed[x]['isTranslatable'];
+          // let outerCounter = 0;
+
+          (async () => {
+              try {
+                
+                // console.log(baseUrlFmtJson3);
+                const {data} = await axios.get(baseUrlFmtJson3);  
+                texts = data.events.map((event) => event.segs);
+
+                  for (var i = 0; i < texts.length; i++) {
+                    if (texts[i] != null || texts[i] != undefined) {
+                      for (var j = 0; j < texts[i].length; j++) {
+                        if (texts[i][j] != null || texts[i][j] != undefined) {
+                          if (texts[i][j].utf8 != null || texts[i][j].utf8 != undefined) {
+                            // t += texts[i][j].utf8;
+                            t += texts[i][j].utf8 + " ";
+                            // if(texts[i][j].utf8) {
+                            //   t += texts[i][j].utf8.replace(/'/g, "\'")
+                            // }
+                            
                           }
                         }
                       }
