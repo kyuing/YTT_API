@@ -13,10 +13,11 @@ router.get("/error/:id", ctrl.getError); //get an error
 
 
 
-
+/*********************************************************************************************************
 //this can be used for POST on web using a form
 //if using this, you can kind of provide GET a doc in full
 router.post("/ytt/api", ctrl.postDocByForm); //post a doc  <-- need another function and its legacy code 
+***********************************************************************************************************/
 
 //post a doc using GET req.  
 //query params ?url='youtube video url goes here'

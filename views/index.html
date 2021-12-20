@@ -55,7 +55,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a class="nav-link" href="#main-container">URL SEARCH
+            <a class="nav-link" href="#main-container">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
@@ -74,20 +74,17 @@
   <!-- Page Content -->
   <div class="container text-center mt-5 mb-3" id="main-container">
       <div class="text-center mb-3">
-        <form enctype="application/json" action="/ytt/api" method="post" class="pt-5" id="form">
-        <!-- <form enctype="application/json" action="/ytt" method="post" class="pt-5" id="form"> -->
-        <!-- <form enctype="application/json" action="/ytt_ytapi_test" method="get" class="pt-5" id="form"> -->
-          <!-- <h2>Enter a Youtube video URL</h2> -->
+        <!-- <form enctype="application/json" action="/ytt/api" method="post" class="pt-5" id="form">
           <div class="form-group mt-3 mb-0">            
             <input 
               id="url-search-input" class="form-control mt-3" type="url" name="url" 
               placeholder="URL SEARCH:  enter a Youtube video URL" pattern="https://(www)?(\.)?(m\.)?youtu.*" 
             required>
-            <input type="hidden" name="ffull" value="aaaaaaaaaaaaaa" />
+            <input type="hidden" name="full" value="true" />
             <button id="submit-btn" type="submit" class="btn btn-danger btn-block mt-1">Submit</button>
           </div>
           <p class="text-muted" id="cre-text-muted">Copy & Paste a youtube video URL</p>
-        </form>
+        </form> -->
 
         <!-- <div id="video-search"></div>
         <form enctype="application/json" action="/ytt" method="get" class="pt-5" id="search-form">
@@ -119,11 +116,14 @@
         
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
               <div class="card-body">
-                <p><a href="https://youtubetotext.online">
-                  <b>YTT_API</b></a> is a RESTful API that provides text-based reproduced resources from a requested Youtube video URL.<br>
+                <p><a href="https://youtubetotext.online"><b>YTT_API</b></a> is a RESTful API that provides text reproduction service from subtitles, CC, or script (hereinafter referred to as "script") registered in requested Youtube video.<br>
+                  From a requested video you make, we provides JSON document related to the input video script, fully-mgerged script by languages avaiable without having to play any videos from Youtube, and so forth.<br>
+                  <br>Take a look at our <a href="./doc.html">API documentation</a> and our <a href="#">web app</a> that interacts with the API.
+                 
+                  <!-- <b>YTT_API</b></a> is a RESTful API that provides text-based resources reproduced from a requested Youtube video URL.<br>
                   We provides fully-merged captions of a requested video as a script by languages avaiable without having to play any videos from Youtube.<br>
                   <br>To get a sample response, submit a Youtube video URL into the form above and get a full JSON document of the input video.
-                  <br>The response will be based on its caption data....but merged....so script
+                  <br>The response will be based on its caption data....but merged....so script -->
 
                   
                 </p>
