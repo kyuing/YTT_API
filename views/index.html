@@ -45,44 +45,47 @@
 
 <body>
 
-  <!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_mobile_navbar -->
+  <!-- Page Content -->
+  <div class="container mt-5 mb-3" id="main-container">
+
+    <!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_mobile_navbar -->
   <!-- https://www.w3schools.com/howto/howto_js_mobile_navbar.asp -->
   <!-- Top Navigation Menu -->
   <!-- <div class="topnav navbar navbar-expand-lg navbar-dark bg-dark static-top sticky"> -->
     <div class="topnav static-top sticky">
-    <a class="nav-link active" href="./doc.html"><b>YTT API</b></a>
-    <!-- Navigation links (hidden by default) -->
-    <div id="myLinks">
-      <!-- <a class="nav-link active text-top" href="./doc.html">YTT API</a> -->
-      <a href="./index.html">Home</a>
-      <a class="nav-link" href="#intro">Introduction</a>
-      <a class="nav-link" href="#getttingStarted">Getting Started</a>
-      <a class="nav-link" href="#resources">Resources</a>
-      <a class="nav-link ml-2" href="#postDoc">POST /ytt/api?url=</a>
-      <a class="nav-link ml-2" href="#getDoc">GET /ytt/api/:id</a>
-      <a class="nav-link ml-2" href="#getDocs">GET /ytt/api/all</a>
-      <a class="nav-link ml-2" href="#getScript">GET /ytt/api/:id/script?q=</a>
-      <a class="nav-link ml-2" href="#getScripts">GET /ytt/api/:id/scripts</a>
-      <a class="nav-link disabled" href="#">Disabled</a>
-    </div>
-    <!-- "Hamburger menu" / "Bar icon" to toggle the navigation links -->
-    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-      <i class="fa fa-bars" style="font-size:30px; color:rgb(248, 245, 245)" aria-hidden="true"></i>
-    </a>
-  </div>  
-
-  <!-- Page Content -->
-  <div class="container mt-5 mb-3" id="main-container">
+      <a class="nav-link active" href="./index.html"><b>YTT API</b></a>
+      <!-- Navigation links (hidden by default) -->
+      <div id="myLinks">
+        <!-- <a class="nav-link active text-top" href="./doc.html">YTT API</a> -->
+        <!-- <a href="./index.html">Home</a> -->
+        <a class="nav-link" href="#intro">Introduction</a>
+        <a class="nav-link" href="#getttingStarted">Getting Started</a>
+        <a class="nav-link" href="#resources">Resources</a>
+        <a class="nav-link ml-2" href="#postDoc">POST /ytt/api?url=</a>
+        <a class="nav-link ml-2" href="#getDoc">GET /ytt/api/:id</a>
+        <a class="nav-link ml-2" href="#getDocs">GET /ytt/api/all</a>
+        <a class="nav-link ml-2" href="#getScript">GET /ytt/api/:id/script?q=</a>
+        <a class="nav-link ml-2" href="#getScripts">GET /ytt/api/:id/scripts</a>
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </div>
+      <!-- "Hamburger menu" / "Bar icon" to toggle the navigation links -->
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars" style="font-size:30px; color:rgb(248, 245, 245)" aria-hidden="true"></i>
+      </a>
+    </div> 
 
     <h1 class="pt-5 mt-5" id="intro">Introduction</h1>
-    <a href="https://youtubetotext.online"><b>YTT_API</b></a> is a RESTful API that provides text reproduction service from subtitles, CC, or script (hereinafter referred to as "script") registered in requested Youtube video.<br>
-      From a requested video you make, we provides JSON document related to the input video script, fully-mgerged script by languages avaiable without having to play any videos from Youtube, and so forth.<br>
-      <br>Take a look at our <a href="./doc.html">API documentation</a> and our <a href="#">web app</a> that interacts with the API.
-
-
-    YTT API is where you can get a fully-mgerged subtitles, CC, or <b>script</b> (hereinafter referred to as "script") 
+    <a href="./index.html"><b>YTT_API</b></a> is a RESTful API that provides text reproduction service 
+    from subtitles, CC, or script registered in Youtube videos. 
+    Take a look at our <a href="./index.html">API documentation</a> and our <a href="#">web app</a> that interacts with the API.<br>
+      <!-- From a requested video you make, we provides JSON document related to the input video script, fully-mgerged script by languages avaiable without having to play any videos from Youtube, and so forth.<br> -->
+     
+    <br>YTT API is where you can get a fully-mgerged subtitles, CC, or <b>script</b> (hereinafter referred to as "script") 
     of a Youtube video in one go without having to play any videos from Youtube. You can get a script info of a video in JSON, 
     a specific script of a video by a language, languages available, and more.
+
+    <br>The API is web-based and the supported language for reuqest & response is <b>javascript</b>.  
+     Any further language supports will be updated via this documentation page.  
 
     <br><a href="#getttingStarted">Getting Started</a> and <a href="#resources">Resources</a> will guildes you 
     on how to use the API with HTTP requests.
@@ -131,7 +134,6 @@
       </pre>
     </div>
 
-    <h2 class="mt-5 pt-5" id="curl">add some more info</h2>
     
 
     <div class="pt-5"></div>
