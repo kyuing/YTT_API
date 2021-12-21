@@ -34,155 +34,400 @@
   <script src="./js/jquery.min.js"></script>
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="./css/main.css" rel="stylesheet" type="text/css">
+ 
 
-  <title>YoutubeToText</title>
+  <title>YTT API</title>
 </head>
 
 <body>
-  <!-- Navigation -->
-  <!-- https://stackoverflow.com/questions/66614050/auto-close-navbar-when-click-on-link-responsive-mode -->
-  <!-- https://stackoverflow.com/questions/42401606/how-to-hide-collapsible-bootstrap-navbar-on-click -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top sticky">
-    <div class="container">
-      <a class="navbar-brand" href="./index.html">YoutubeToText</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item active" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a class="nav-link" href="#main-container">Home
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          
-          <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a class="nav-link" href="./doc.html">API Documentation</a>
-          </li>
-          <!-- <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a class="nav-link" href="#sample">SAMPLE</a>
-          </li> -->
-        </ul>
-      </div>
+
+  <!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_mobile_navbar -->
+  <!-- https://www.w3schools.com/howto/howto_js_mobile_navbar.asp -->
+  <!-- Top Navigation Menu -->
+  <!-- <div class="topnav navbar navbar-expand-lg navbar-dark bg-dark static-top sticky"> -->
+    <div class="topnav static-top sticky">
+    <a class="nav-link active" href="./doc.html"><b>YTT API</b></a>
+    <!-- Navigation links (hidden by default) -->
+    <div id="myLinks">
+      <!-- <a class="nav-link active text-top" href="./doc.html">YTT API</a> -->
+      <a href="./index.html">Home</a>
+      <a class="nav-link" href="#intro">Introduction</a>
+      <a class="nav-link" href="#getttingStarted">Getting Started</a>
+      <a class="nav-link" href="#resources">Resources</a>
+      <a class="nav-link ml-2" href="#postDoc">POST /ytt/api?url=</a>
+      <a class="nav-link ml-2" href="#getDoc">GET /ytt/api/:id</a>
+      <a class="nav-link ml-2" href="#getDocs">GET /ytt/api/all</a>
+      <a class="nav-link ml-2" href="#getScript">GET /ytt/api/:id/script?q=</a>
+      <a class="nav-link ml-2" href="#getScripts">GET /ytt/api/:id/scripts</a>
+      <a class="nav-link disabled" href="#">Disabled</a>
     </div>
-  </nav>
+    <!-- "Hamburger menu" / "Bar icon" to toggle the navigation links -->
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+      <i class="fa fa-bars" style="font-size:30px; color:rgb(248, 245, 245)" aria-hidden="true"></i>
+    </a>
+  </div>  
 
   <!-- Page Content -->
-  <div class="container text-center mt-5 mb-3" id="main-container">
-      <div class="text-center mb-3">
-        <!-- <form enctype="application/json" action="/ytt/api" method="post" class="pt-5" id="form">
-          <div class="form-group mt-3 mb-0">            
-            <input 
-              id="url-search-input" class="form-control mt-3" type="url" name="url" 
-              placeholder="URL SEARCH:  enter a Youtube video URL" pattern="https://(www)?(\.)?(m\.)?youtu.*" 
-            required>
-            <input type="hidden" name="full" value="true" />
-            <button id="submit-btn" type="submit" class="btn btn-danger btn-block mt-1">Submit</button>
-          </div>
-          <p class="text-muted" id="cre-text-muted">Copy & Paste a youtube video URL</p>
-        </form> -->
+  <div class="container mt-5 mb-3" id="main-container">
 
-        <!-- <div id="video-search"></div>
-        <form enctype="application/json" action="/ytt" method="get" class="pt-5" id="search-form">
-          <div class="form-group mt-3 mb-0">
-            <input id="search-input" class="form-control mt-3" type="text" name="q" placeholder="VIDEO SEARCH:  enter search keywords" required>
-            <button id="submit-btn" type="submit" class="btn btn-info btn-block mt-1">Submit</button>
-          </div>
-          <p class="text-muted" id="cre-text-muted">Search for Youtube videos and then read the video !</p>
-        </form> -->
-        
-      </div>
-     
+    <h1 class="pt-5 mt-5" id="intro">Introduction</h1>
+    <a href="https://youtubetotext.online"><b>YTT_API</b></a> is a RESTful API that provides text reproduction service from subtitles, CC, or script (hereinafter referred to as "script") registered in requested Youtube video.<br>
+      From a requested video you make, we provides JSON document related to the input video script, fully-mgerged script by languages avaiable without having to play any videos from Youtube, and so forth.<br>
+      <br>Take a look at our <a href="./doc.html">API documentation</a> and our <a href="#">web app</a> that interacts with the API.
 
 
-      <!-- https://getbootstrap.com/docs/4.3/components/collapse/ -->
-      <!-- https://www.w3schools.com/bootstrap4/tryit.asp?filename=trybs_collapsible_accordion&stacked=h -->
-      <div class="pb-5" id="faq"></div>
-      <div class="mt-5 pb-5" id="faq-container">
-      
-        <div class="accordion" id="accordionExample">
-          <div class="card">
-            <div class="card-header" id="headingOne">
-              <h2 class="mb-0">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                  What is YTT_API and how does it work ? 
-                </button>
-              </h2>
-            </div>
-        
-            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-              <div class="card-body">
-                <p><a href="https://youtubetotext.online"><b>YTT_API</b></a> is a RESTful API that provides text reproduction service from subtitles, CC, or script (hereinafter referred to as "script") registered in requested Youtube video.<br>
-                  From a requested video you make, we provides JSON document related to the input video script, fully-mgerged script by languages avaiable without having to play any videos from Youtube, and so forth.<br>
-                  <br>Take a look at our <a href="./doc.html">API documentation</a> and our <a href="#">web app</a> that interacts with the API.
-                 
-                  <!-- <b>YTT_API</b></a> is a RESTful API that provides text-based resources reproduced from a requested Youtube video URL.<br>
-                  We provides fully-merged captions of a requested video as a script by languages avaiable without having to play any videos from Youtube.<br>
-                  <br>To get a sample response, submit a Youtube video URL into the form above and get a full JSON document of the input video.
-                  <br>The response will be based on its caption data....but merged....so script -->
+    YTT API is where you can get a fully-mgerged subtitles, CC, or <b>script</b> (hereinafter referred to as "script") 
+    of a Youtube video in one go without having to play any videos from Youtube. You can get a script info of a video in JSON, 
+    a specific script of a video by a language, languages available, and more.
 
-                  
-                </p>
-                <!-- <p>&#9728; If you've already copied a Youtube video URL, paste it into the <a href="#main-container" style="color: #dc3545;"><b>URL SEARCH</b></a> form.</p>	
-                <p>&#128270; If you wanna search for Youtube videos first, 
-                  do so using <a href="#video-search" style="color: #17a2b8;"><b>VIDEO SEARCH</b></a> form.<br>
-                  You then simply copy video URL and paste it into the the <a href="#main-container" style="color: #dc3545;"><b>URL SEARCH</b></a> form.
-                </p>
-                <p>Otherwise, just get a video URL from <a href="https://www.youtube.com/" target="_blank">youtube.com</a>, paste it into the <a href="#main-container" style="color: #dc3545;"><b>URL SEARCH</b></a> form.</p>	 -->
-              </div>
-            </div>
-          </div>
-          <!-- <div class="card">
-            <div class="card-header" id="headingTwo">
-              <h2 class="mb-0">
-                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                  I don't know how to copy video URL/address.
-                </button>
-              </h2>
-            </div>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-              <div class="card-body">
-                <p>PC/desk-top: right-click on a video and click <b>copy video URL</b>.</p>
-                <p>
-                  mobile: press a video for one second and select <b>copy video URL</b>.<br>
-                  Alternatively, find and touch <b style="font-size: 20px; font-weight:bold;">&#8942;</b> on the top-right conner of video, <b>Share</b>, and <b>Copy link</b>. 
-                </p>
-              </div>
-            </div>
-          </div> -->
-          
-        </div>
-        
-      </div>
+    <br><a href="#getttingStarted">Getting Started</a> and <a href="#resources">Resources</a> will guildes you 
+    on how to use the API with HTTP requests.
+     Welcome to YTT API !
+    <br>
 
 
+    <div class="pt-5"></div>
+    <h1 class="pt-5 mt-5" id="getttingStarted">Getting Started</h1>
+    
+    <h2 class="mt-5 pt-5" id="curl">curl</h2>
+    Open a terminal window and make an API GET request with a URL as query parameter for a resource.
+    <br>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
+      <code>curl http://localhost:5500/ytt/api?url=<b>https://youtu.be/MBdVXkSdhwU</b></code>
     </div>
+    If the request is valid, you will see a successful message as follows.
+    <br>the highlighted value at the end of URL is the ID of the document,
+    which means, a document with the URL input exists in our DB. 
+    <br>Simply copy it. 
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>Found. Redirecting to /ytt/api/<mark style="background-color: #64645f">61aa5f048eb33d6305a522bb</mark></code>
+    </div>
+
+    Now, make an actual GET request with the ID.
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
+      <code>curl http://localhost:5500/ytt/api/<mark style="background-color: #64645f">61aa5f048eb33d6305a522bb</mark></code>
+    </div>
+
+
+    The response you get.
+    <div style="background-color: rgb(35, 36, 34)" class="pt-4 pb-1 mb-5">
+      <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
+      <pre style="color: pink" class="pt-1">
+        {
+          "_id": "61aa5f048eb33d6305a522bb",
+          "title": "BTS (방탄소년단) &#39;DNA&#39; Official MV",
+          "url": "https://youtu.be/MBdVXkSdhwU",
+          "available languages in captionTracks": [
+              "0: .en",
+              "1: a.ko"
+          ]
+        }
+      </pre>
+    </div>
+
+    <h2 class="mt-5 pt-5" id="curl">add some more info</h2>
+    
+
+    <div class="pt-5"></div>
+    <h1 class="pt-5 mt-5" id="resources">Resources</h1>
+    
+    <h2 class="mt-5 pt-5" id="postDoc">POST <span style="background-color: rgb(35, 36, 34);" class="mb-5 pt-1 pb-1 pl-1 pr-1">
+      <code>/ytt/api?url=</code> 
+    </span></h2>
+    Create and save a new document to DB by providing a YOUTUBE video URL as a query parameter.
+    <br>(The actual HTTP verb operation used is GET, which functions as a POST in this endpoint) 
+    
+    <h5 class="mt-4">Option 1) send a POST request and GET the document</h5>
+    
+    <b>example request</b>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api?url=https://youtu.be/MBdVXkSdhwU</code>
+    </div>
+    
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>POST to the collection successfully</code>
+    </div>
+    A successful response will automatically redirect to the endpoint 
+      <code style="background-color: rgb(35, 36, 34)">GET /ytt/api/:id</code>
+    <br>Click <a href="#getDocDefault">here</a> to check the response
+    
+    
+
+    <h5 class="mt-4">Option 2) send a POST request and GET the document with full details</h5>
+    
+    <b>example request</b>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api?url=https://youtu.be/MBdVXkSdhwU&full=true</code>
+    </div>
+    
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>POST to the collection successfully</code>
+    </div>
+    A successful response will automatically redirect to the endpoint 
+      <code style="background-color: rgb(35, 36, 34)">GET /ytt/api/:id?full=true</code>
+    <br>Click <a href="#getDocDetail">here</a> to check the response
+    
+    
+    <h2 class="mt-5 pt-5" id="getDoc">GET <span style="background-color: rgb(35, 36, 34);" class="mb-5 pt-1 pb-1 pl-1 pr-1">
+      <code>/ytt/api/:id</code> 
+    </span></h2>
+    Get a document in JSON by providing ID of the document
+    
+    <!-- this needs to be refined.. padding is too much for now -->
+    <div id=getDocDefault class="pt-5"></div>
+    <h5 class="mt-4">Option 1) GET a JSON document (default)</h5>
+
+    <div class="mt-3"><b>example request</b></div>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api/61aa5f048eb33d6305a522bb</code>
+    </div>
+    
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="pt-4 pb-1 mb-5">
+      <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
+      <pre style="color: pink" class="pt-1">
+        GET /ytt/api/61aa5f048eb33d6305a522bb 200 - - 30.214 ms
+
+        {
+          "_id": "61aa5f048eb33d6305a522bb",
+          "title": "BTS (방탄소년단) &#39;DNA&#39; Official MV",
+          "url": "https://youtu.be/MBdVXkSdhwU",
+          "available languages in captionTracks": [
+              "0: .en",
+              "1: a.ko"
+          ]
+        }
+      </pre>
+    </div>
+
+    <div id=getDocDetail class="pt-5"></div>
+    <h5 class="mt-4">Option 2) GET a document in JSON with full details</h5>
+    
+    <b>example request</b>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api/61aa5f048eb33d6305a522bb?full=true</code>
+    </div>
+    
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="pt-4 mb-5">
+      <!-- http://web.simmons.edu/~grabiner/comm244/weekfour/code-test.html -->
+      <pre style="color: pink" class="pt-1">
+        GET /ytt/api/61aa5f048eb33d6305a522bb?full=true 200 - - 17.834 ms
+
+        {
+          "_id": "61aa5f048eb33d6305a522bb",
+          "url": "https://youtu.be/MBdVXkSdhwU",
+          "videoId": "MBdVXkSdhwU",
+          "title": "BTS (방탄소년단) &#39;DNA&#39; Official MV",
+          "captionTracks": [
+             {
+                "baseUrl": "https://www.youtube.com/api/timedtext?v=MBdVXkSdhwU&asr_langs=de%2Cen%2Ces%2Cfr%2Cid%2Cit%2Cja%2Cko%2Cnl%2Cpt%2Cru%2Ctr%2Cvi&caps=asr&exp=xftt%2Cxctw&xoaf=5&hl=en-GB&ip=0.0.0.0&ipbits=0&expire=1638580597&sparams=ip%2Cipbits%2Cexpire%2Cv%2Casr_langs%2Ccaps%2Cexp%2Cxoaf&signature=E612E9D773023F8F0C05BE22C9F567AECE16E586.5AAEB890B703698451C22B6AC984BF29774810CA&key=yt8&lang=en&fmt=json3",
+                "name": "English",
+                "vssId": ".en",
+                "languageCode": "en",
+                "isTranslatable": true,
+                "script": "At first sight I could recognize you As if we were calling for each other The DNA in my blood vessel tells me That it’s you I was looking all over for Crossing our paths is like a formula of math Commandments of religion, providence of the universe The evidence of destiny given to me You’re the source of my dream Take it take it My hand reaching out to you is a fate decided Don’t worry love All of this is not a coincidence We’re totally different baby Cuz we’re the two who found the destiny From the day of the unverse’s creation and on through the infinite centuries and on In the previous life and maybe the next too We’re forever together All of this is not a coincidence Cuz we’re the two who found the destiny DNA I want it this love I want it real love I only focus on you You steer me a little harder The DNA of the genesis wants you This is inevitable, I love us, We are the only true lovers Every time I see her I freak out Surprisingly I keep gasping and it’s weird, maybe This is the emotion they call love Cuz from the very beginning my heart runs to you Don’t worry love All of this is not a coincidence We’re totally different baby Cuz we’re the two who found the destiny From the day of the unverse’s creation and on through the infinite centuries and on In the previous life and maybe the next too We’re forever together All of this is not a coincidence Cuz we’re the two who found the destiny DNA Don’t look back Cuz we’re the ones who found the destiny Don’t regret it baby Cuz we’re forever Forever Together Don’t worry love All of this is not a coincidence We’re totally different baby Cuz we’re the two who found the destiny DNA La la la la la Cuz it’s not a coincidence La la la la la Cuz it’s not a coincidence DNA ",
+                "_id": "61aa5f048eb33d6305a522bc"
+             },
+             {
+                "baseUrl": "https://www.youtube.com/api/timedtext?v=MBdVXkSdhwU&asr_langs=de%2Cen%2Ces%2Cfr%2Cid%2Cit%2Cja%2Cko%2Cnl%2Cpt%2Cru%2Ctr%2Cvi&caps=asr&exp=xftt%2Cxctw&xoaf=5&hl=en-GB&ip=0.0.0.0&ipbits=0&expire=1638580597&sparams=ip%2Cipbits%2Cexpire%2Cv%2Casr_langs%2Ccaps%2Cexp%2Cxoaf&signature=E612E9D773023F8F0C05BE22C9F567AECE16E586.5AAEB890B703698451C22B6AC984BF29774810CA&key=yt8&kind=asr&lang=ko&fmt=json3",
+                "name": "Korean (auto-generated)",
+                "vssId": "a.ko",
+                "languageCode": "ko",
+                "kind": "asr",
+                "isTranslatable": true,
+                "script": "[박수] \n [음악] \n 5 \n [음악] \n 으  으 \n [음악] \n we  see  i  were  here \n 우리 \n der  er \n 너의  꼬마  충성 \n 생일  tae  woo \n 아  no  good \n [음악] \n 우리  1.55  m \n who  we  are  team  입니다 \n there  was  a \n [음악] \n on \n on \n too \n who  are  we \n a  on  b  e  항원  b  언어  영어 \n 맛조개  좀더  게  날에  그  내  탈수  했지요  아래  dry \n 않은데  이런  eros \n 말이  춤  kereta  bawah \n [음악] \n 아아아  converter \n cowon \n 공간조차 \n der  er  win  over  there  were  a \n [음악] \n on \n 오오오 \n oh  oh \n wow \n 다  풀어  보십시오 \n [음악] \n we  wood \n 병  마음의  병  멍해 \n [음악] \n 함께  미카  won \n woo \n wonder \n [음악] \n we  here  we  here  we \n [음악] \n 에 ",
+                "_id": "61aa5f048eb33d6305a522bd"
+             }
+          ],
+          "createdAt": "2021-12-03T18:16:36.917Z",
+          "updatedAt": "2021-12-03T18:16:36.917Z",
+          "__v": 0
+       }
+
+      </pre>
+    </div>
+
+    <h2 class="mt-5 pt-5" id="getDocs">GET <span style="background-color: rgb(35, 36, 34);" class="mb-5 pt-1 pb-1 pl-1 pr-1">
+      <code>/ytt/api/all</code> 
+    </span></h2>
+    Get all of documents in JSON in DB
+
+    <div class="mt-3"><b>example request</b></div>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api/all</code>
+    </div>
+
+
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="pt-4 mb-5">
+      <pre style="color: pink" class="pt-1">
+        GET /ytt/api/all 200 - - 76.331 ms
+
+        [
+          <span style="color: gray;">//1st doc in DB</span>
+          {
+            "_id": "617fd2dd9e1d00ac42cc623c",
+            "url": "https://youtu.be/siow15Yn8r8",
+            "videoId": "siow15Yn8r8",
+            "title": "리액트 네이티브 vs 플러터. 당신의 선택은?",
+            "captionTracks": [
+                {
+                    "baseUrl": "https://www.youtube.com/api/timedtext?v=siow15Yn8r8&asr_langs=de%2Cen%2Ces%2Cfr%2Cid%2Cit%2Cja%2Cko%2Cnl%2Cpt%2Cru%2Ctr%2Cvi&caps=asr&exp=xftt%2Cxctw&xoaf=5&hl=en-GB&ip=0.0.0.0&ipbits=0&expire=1635792204&sparams=ip%2Cipbits%2Cexpire%2Cv%2Casr_langs%2Ccaps%2Cexp%2Cxoaf&signature=ADF971F25FEE4F5B67E858906F057B40C2B64F36.848E9F4626AE0B353711FBCAFE16BBA7EEE2F8A9&key=yt8&kind=asr&lang=en&fmt=json3",
+                    "name": "English (auto-generated)",
+                    "vssId": "a.en",
+                    "languageCode": "en",
+                    "kind": "asr",
+                    "isTranslatable": true,
+                    "script": "when  should  I  use  flutter  when  should  I \n use  react  native  so  these  doing  decent \n react  native  will  make  you  cry \n and  maybe  if  you  find  a  module  some  open \n source  thing  it  will  be  buggy  dart  is \n not  the  best  language  is  not  sexy  is \n super  object-oriented \n [Music] \n hello  everybody \n welcome  to  this  a  very  nice  review  of \n slaughter  versus  react  native  on  this \n review  we're  going  to  talk  about  many \n things  that  I  found  out  what  I  was \n working  with  flutter  versus  react  native \n what  I  think  is  good  what  I  think  is  bad \n and  this  is  again  my  opinion  only  is  not \n the  truth  it's  just  what  I  think  as  a \n developer  and  my  opinion  has  changed \n through  the  years  and  will  keep  changing \n forever  so  this  is  an  opinion  that  I \n have  buy  today  to  this  day  all  right  so \n don't  quote  me  on  this  in  20  years  ten \n years  five  years  things  change \n developers  change  frustration  changes \n the  way  we  see  things  change  keep  that \n in  mind  now  flutter  flutter  is  a  Google \n product  react  native  Facebook  product  we \n know  this  big  difference  though  Google \n wants  to  dominate  the  cross-platform \n thing  they  really  are  putting  all  the \n resources  they  have  into  this  they  have \n done  an  amazing  job  they  have  the \n support  is  great  they  have  done  great \n stuff  what  is  just 
+                    "_id": "617fd2dd9e1d00ac42cc623d"
+                  }
+              ],
+              "createdAt": "2021-11-01T11:43:25.476Z",
+              "updatedAt": "2021-11-01T11:43:25.476Z",
+              "__v": 0
+          },
+
+          <span style="color: gray;">//2nd doc..</span>
+          {
+            .......
+          },
+
+          <span style="color: gray;">//3rd doc..</span>
+          {
+            ......
+          },
+
+          <span style="color: gray;">//and so forth..</span>
+          {
+            ......
+          }
+        ]
+      </pre>
+    </div>
+
+
+    <h2 class="mt-5 pt-5" id="getScript">GET <span style="background-color: rgb(35, 36, 34);" class="mb-5 pt-1 pb-1 pl-1 pr-1">
+      <code>/ytt/api/:id/script</code> 
+    </span></h2>
+    <h5 class="mt-4">Query Option 1) <span style="background-color: rgb(35, 36, 34);" class="mb-5 pt-1 pb-1 pl-1 pr-1"><code>?q=</code></span></h5>
+    Get a script by a language selected from a JSON document in DB 
+
+    <div class="mt-3"><b>example request</b></div>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api/61aa5f048eb33d6305a522bb/script?q=.en</code>
+    </div>
+
+
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="pt-4 mb-5">
+      <pre style="color: pink" class="pt-1">
+        GET /ytt/api/61aa5f048eb33d6305a522bb/script?q=.en 200 - - 23.648 ms
+
+        "At first sight I could recognize you As if we were calling for each other The DNA in my blood vessel tells me That it’s you I was looking all over for Crossing our paths is like a formula of math Commandments of religion, providence of the universe The evidence of destiny given to me You’re the source of my dream Take it take it My hand reaching out to you is a fate decided Don’t worry love All of this is not a coincidence We’re totally different baby Cuz we’re the two who found the destiny From the day of the unverse’s creation and on through the infinite centuries and on In the previous life and maybe the next too We’re forever together All of this is not a coincidence Cuz we’re the two who found the destiny DNA I want it this love I want it real love I only focus on you You steer me a little harder The DNA of the genesis wants you This is inevitable, I love us, We are the only true lovers Every time I see her I freak out Surprisingly I keep gasping and it’s weird, maybe This is the emotion they call love Cuz from the very beginning my heart runs to you Don’t worry love All of this is not a coincidence We’re totally different baby Cuz we’re the two who found the destiny From the day of the unverse’s creation and on through the infinite centuries and on In the previous life and maybe the next too We’re forever together All of this is not a coincidence Cuz we’re the two who found the destiny DNA Don’t look back Cuz we’re the ones who found the destiny Don’t regret it baby Cuz we’re forever Forever Together Don’t worry love All of this is not a coincidence We’re totally different baby Cuz we’re the two who found the destiny DNA La la la la la Cuz it’s not a coincidence La la la la la Cuz it’s not a coincidence DNA "
+      </pre>
+    </div>
+
+    <h5 class="mt-4">Query Option 2) <span style="background-color: rgb(35, 36, 34);" class="mb-5 pt-1 pb-1 pl-1 pr-1"><code>?q=lang_code&pdf=true</code></span></h5>
+    Get a downloadable script as a PDF link on web by a language selected from a JSON document in DB. Make sure to provide a valid <b>language code</b> available and to add the parameter <b>pdf</b> to be <b>true</b> as the example below.
+    <br>
+    To find language codes available for a document, please refer to the endpoint <a href="#getDocDefault">GET /ytt/api/:id</a>  
+
+    <div class="mt-3"><b>example request</b></div>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api/61aa5f048eb33d6305a522bb/script?q=.en&pdf=true</code>
+    </div>
+
+
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="pt-4 mb-5">
+      <pre style="color: pink" class="pt-1">
+        GET /ytt/api/61aa5f048eb33d6305a522bb/script?q=.en&pdf=true 200 - - 132.059 ms<br><br>
+        <img src="../assets/pdf_res.png" alt="pdf res" width="600" height="400">
+
+        </pre>
+    </div>
+
+
+    <h2 class="mt-5 pt-5" id="getScripts">GET <span style="background-color: rgb(35, 36, 34);" class="mb-5 pt-1 pb-1 pl-1 pr-1">
+      <code>/ytt/api/:id/scripts</code> 
+    </span></h2>
+    Get scripts by languages available from a JSON document in DB 
+
+    <div class="mt-3"><b>example request</b></div>
+    <div style="background-color: rgb(35, 36, 34)" class="mb-5 pt-1 pb-1">
+      <code>http://localhost:5500/ytt/api/61aa5f048eb33d6305a522bb/scripts</code>
+    </div>
+
+
+    <b>example response</b>
+    <div style="background-color: rgb(35, 36, 34)" class="pt-4 mb-5">
+      <pre style="color: pink" class="pt-1">
+        GET /ytt/api/61aa5f048eb33d6305a522bb/scripts 200 - - 51.824 ms
+
+        [
+            {
+                "baseUrl": "https://www.youtube.com/api/timedtext?v=MBdVXkSdhwU&asr_langs=de%2Cen%2Ces%2Cfr%2Cid%2Cit%2Cja%2Cko%2Cnl%2Cpt%2Cru%2Ctr%2Cvi&caps=asr&exp=xftt%2Cxctw&xoaf=5&hl=en-GB&ip=0.0.0.0&ipbits=0&expire=1638580597&sparams=ip%2Cipbits%2Cexpire%2Cv%2Casr_langs%2Ccaps%2Cexp%2Cxoaf&signature=E612E9D773023F8F0C05BE22C9F567AECE16E586.5AAEB890B703698451C22B6AC984BF29774810CA&key=yt8&lang=en&fmt=json3",
+                "name": "English",
+                "vssId": ".en",
+                "languageCode": "en",
+                "isTranslatable": true,
+                "script": <mark style="background-color: #64645f">"At first sight I could recognize you As if we were calling for each other The DNA in my blood vessel tells me That it’s you I was looking all over for Crossing our paths is like a formula of math Commandments of religion, providence of the universe The evidence of destiny given to me You’re the source of my dream Take it take it My hand reaching out to you is a fate decided Don’t worry love All of this is not a coincidence We’re totally different baby Cuz we’re the two who found the destiny From the day of the unverse’s creation and on through the infinite centuries and on In the previous life and maybe the next too We’re forever together All of this is not a coincidence Cuz we’re the two who found the destiny DNA I want it this love I want it real love I only focus on you You steer me a little harder The DNA of the genesis wants you This is inevitable, I love us, We are the only true lovers Every time I see her I freak out Surprisingly I keep gasping and it’s weird, maybe This is the emotion they call love Cuz from the very beginning my heart runs to you Don’t worry love All of this is not a coincidence We’re totally different baby Cuz we’re the two who found the destiny From the day of the unverse’s creation and on through the infinite centuries and on In the previous life and maybe the next too We’re forever together All of this is not a coincidence Cuz we’re the two who found the destiny DNA Don’t look back Cuz we’re the ones who found the destiny Don’t regret it baby Cuz we’re forever Forever Together Don’t worry love All of this is not a coincidence We’re totally different baby Cuz we’re the two who found the destiny DNA La la la la la Cuz it’s not a coincidence La la la la la Cuz it’s not a coincidence DNA ",</mark>
+                "_id": "61aa5f048eb33d6305a522bc"
+            },
+            {
+                "baseUrl": "https://www.youtube.com/api/timedtext?v=MBdVXkSdhwU&asr_langs=de%2Cen%2Ces%2Cfr%2Cid%2Cit%2Cja%2Cko%2Cnl%2Cpt%2Cru%2Ctr%2Cvi&caps=asr&exp=xftt%2Cxctw&xoaf=5&hl=en-GB&ip=0.0.0.0&ipbits=0&expire=1638580597&sparams=ip%2Cipbits%2Cexpire%2Cv%2Casr_langs%2Ccaps%2Cexp%2Cxoaf&signature=E612E9D773023F8F0C05BE22C9F567AECE16E586.5AAEB890B703698451C22B6AC984BF29774810CA&key=yt8&kind=asr&lang=ko&fmt=json3",
+                "name": "Korean (auto-generated)",
+                "vssId": "a.ko",
+                "languageCode": "ko",
+                "kind": "asr",
+                "isTranslatable": true,
+                "script": <mark style="background-color: #64645f">"[박수] \n [음악] \n 5 \n [음악] \n 으  으 \n [음악] \n we  see  i  were  here \n 우리 \n der  er \n 너의  꼬마  충성 \n 생일  tae  woo \n 아  no  good \n [음악] \n 우리  1.55  m \n who  we  are  team  입니다 \n there  was  a \n [음악] \n on \n on \n too \n who  are  we \n a  on  b  e  항원  b  언어  영어 \n 맛조개  좀더  게  날에  그  내  탈수  했지요  아래  dry \n 않은데  이런  eros \n 말이  춤  kereta  bawah \n [음악] \n 아아아  converter \n cowon \n 공간조차 \n der  er  win  over  there  were  a \n [음악] \n on \n 오오오 \n oh  oh \n wow \n 다  풀어  보십시오 \n [음악] \n we  wood \n 병  마음의  병  멍해 \n [음악] \n 함께  미카  won \n woo \n wonder \n [음악] \n we  here  we  here  we \n [음악] \n 에 ",</mark>
+                "_id": "61aa5f048eb33d6305a522bd"
+            }
+        ]
+        
+      </pre>
+    </div>
+
+
+    
+
+
+  </div>
 
   <footer class="footer">
     <div class="container text-center">
       <span class="text-muted">&copy; 2021 
-        <a href="https://www.youtubetotext.online/">YoutubeToText</a>
+        <a href="https://www.youtubetotext.online/">YTT API</a>
       </span> |
       <span><a href="mailto:hello@youtubetotext.online">email</a></span>
       <!-- <span style="font-size: 30px"><a href="mailto:hello@youtubetotext.online">&#9993;</a></span> -->
     </div>
   </footer>
 
-  <!-- <script src="./js/jquery.min.js"></script> -->
-  <script src="https://d3js.org/d3.v3.min.js"></script>
-  <script src="./js/d3.layout.cloud.js"></script>
-  <script type="text/javascript" 
-    src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min.js" 
-    integrity="sha512-ZuOjyqq409+q6uc49UiBF3fTeyRyP8Qs0Jf/7FxH5LfhqBMzrR5cwbpDA4BgzSo884w6q/+oNdIeHenOqhISGw==" 
-    crossorigin="anonymous" 
-    referrerpolicy="no-referrer">
+  <!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_mobile_navbar -->
+  <!-- https://www.w3schools.com/howto/howto_js_mobile_navbar.asp -->
+  <script>
+      /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
+    function myFunction() {
+      var x = document.getElementById("myLinks");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+    }
   </script>
-  <!-- <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script> -->
-  <script src="./js/home.js"></script>
+
 </body>
 
 

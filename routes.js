@@ -23,8 +23,6 @@ router.post("/ytt/api", ctrl.postDocByForm); //post a doc  <-- need another func
 //query params ?url='youtube video url goes here'
 //if wanted full res of a doc, ?url='youtube video url goes here'&full=true  
 router.get("/ytt/api", ctrl.postDoc);
-
-
 router.get("/ytt/api/all", ctrl.getDocs); //get all docs
 router.get("/ytt/api/:id", ctrl.getDoc); //get a doc in full or in partial
 router.get("/ytt/api/:id/scripts", ctrl.getScripts);  //get scripts by all languages available in a doc
