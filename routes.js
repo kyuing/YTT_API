@@ -7,7 +7,7 @@ router.use(express.static(path.join(__dirname, "views")));
 
 var ctrl = require("./controller");
 router.get("/hello", ctrl.getHello);  //home
-router.get("/ytt", ctrl.getSearch); //get video search result
+// router.get("/ytt", ctrl.getSearch); //get video search result
 // router.get("/ytt/:id", ctrl.getDoc); //get a doc
 router.get("/error/:id", ctrl.getError); //get an error
 

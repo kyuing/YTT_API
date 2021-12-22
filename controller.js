@@ -18,73 +18,10 @@ exports.getHello = function (req, res) {
 
   console.log("i am at getHello");
 
-  //sample transcript at index.html
-  //BTS (방탄소년단) 'Permission to Dance' Official MV
-  const id = "6100aa0bb8401f4e886fe630";  
-  console.log(id);
-  URL.findOne({ _id: id }, function (err, data) {
-
-    if (err) {
-      console.log("err at getDoc: " + err)
-      // res.status(400).json(err);
-      return res.redirect("/error/" + "No data found")
-    }
-
-    if (data) {
-
-      // console.log(data);
-      let readStream = fs.createReadStream(__dirname + '/views/index.html');
-      readStream.on('close', () => {
-        res.end()
-      })
-
-      var source = fs.readFileSync(__dirname + "/views/index.handlebars", "utf8");
-      var template = Handlebars.compile(source);
-      // res.end(template(data).toString());
-
-      readStream.pipe(res.end(template(data).toString()))
-    } 
-    // else {
-    //   console.log("error msg at getDoc: No data found");
-    //   return res.redirect("/error/" + "No data found")
-    // }
-  }).lean();
+  res.send(__dirname + "/views/index.html");
 
 };
 
-exports.getSearch = function (req, res) {
-
-  console.log(req.query.q)
-  // console.log(req.params.id)
-  // const API_KEY = process.env.YT_DATA_API_KEY;
-  const Q_URL = encodeURI("https://www.googleapis.com/youtube/v3/search?key=" + API_KEY 
-  + "&type=video&part=snippet&maxResults=" + 8 
-  + "&q=" + req.query.q);
-  // console.log(Q_URL)
-
-  let videos;
-  (async () => {
-    try {
-      
-      const { data } = await axios.get(Q_URL);  // const { data } = await axios.got.get(Q_URL);
-      // console.log(data)
-
-      videos = data.items;
-      // videos = JSON.parse(JSON.stringify(data.items));
-      // console.log(videos)
-
-      var source = fs.readFileSync(__dirname + "/views/js/search.handlebars", "utf8");
-      var template = Handlebars.compile(source);
-      res.end(template(videos).toString());
-
-    } catch (error) {
-      console.log(error);
-      // res.write(error)
-    }
-  })();
-
-
-};
 
 exports.getError = function (req, res) {
   console.log("error msg at getError: " + req.params.id)
