@@ -85,6 +85,7 @@ exports.getDoc = function (req, res) {
         res.end(JSON.stringify(
           {
             "_id": d._id,
+            "videoId": d.videoId,
             "title": d.title,
             "url": d.url,
             "available languages in captionTracks": returnAl
