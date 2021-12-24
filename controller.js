@@ -74,6 +74,7 @@ exports.getDoc = function (req, res) {
         console.log(JSON.stringify(
           {
             "_id": d._id,
+            "videoId": d.videoId,
             "title": d.title,
             "url": d.url,
             "available languages in captionTracks": returnAl
@@ -90,64 +91,6 @@ exports.getDoc = function (req, res) {
           },null,4  
         ));
       }
-
-      
-      /*************************************************************
-      //a specific set of res in a doc
-      //it works but it's better to go for vssId
-      res.end(JSON.stringify(
-        {
-          "_id": d._id,
-          "title": d.title,
-          "url": d.url,
-          "available languages in captionTracks": returnAl
-        },null,4  
-      ));
-      ***************************************************************/
-
-      /***********************************************************
-      console.log(JSON.stringify(
-        {
-          "_id": d._id,
-          "title": d.title,
-          "url": d.url,
-          "available languages in captionTracks": returnAl
-        },null,4  
-      ));
-
-      //a specific set of res in a doc
-      //it works but it's better to go for vssId
-      res.end(JSON.stringify(
-        {
-          "_id": d._id,
-          "title": d.title,
-          "url": d.url,
-          "available languages in captionTracks": returnAl
-        },null,4  
-      ));
-      **********************************************************/
-      
-      /*******************************************
-      //works but without a line break
-      res.json(
-        {
-          "_id": d._id,
-          "title": d.title
-        }
-      );
-      *******************************************/
-     
-      /************************************************************************************
-       * some tests..
-      //   //core info of a doc
-      //   res.json(d._id) + "\n" +  // /ytt/api);
-      //   // d.url + "\n" +
-      //   // d.title + "\n" +
-      //   // d.videoId + "\n" +
-      //   // d.captionTracks + "\n" + //[object Object]
-      //   // d.captionTracks.length   //this need to come with lang code or name
-      // );
-      **************************************************************************************/
     } 
   }).lean();
 

@@ -14,9 +14,10 @@ router.get("/error/:id", ctrl.getError); //get an error
 
 
 /*********************************************************************************************************
-//this can be used for POST on web using a form
-//if using this, you can kind of provide GET a doc in full
-router.post("/ytt/api", ctrl.postDocByForm); //post a doc  <-- need another function and its legacy code 
+//this can be used for POST on web using a form.
+//Hoewever, providing HTTP req using browser only rather than an html form is much more clearer 
+//in terms of showing the API's characteristics 
+router.post("/ytt/api", ctrl.postDocByForm); //post a doc   
 ***********************************************************************************************************/
 
 //post a doc using GET req.  
