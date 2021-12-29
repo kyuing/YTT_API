@@ -282,6 +282,11 @@ exports.getDocs = function (req, res) {
     });
 };
 
+
+//not in use.
+//in testing of:
+//http://localhost:5500/ytt/api/61cc9aaeb06a67579ff4a7f8/script?q=.en
+//http://localhost:5500/ytt/api/61cc9aaeb06a67579ff4a7f8/paraphrase?q=.en
 exports.getParaphrase = function (req, res) {
 
   console.log("\nin the function getParaphrase\n")
@@ -300,44 +305,40 @@ exports.getParaphrase = function (req, res) {
     if (data) {
       
       const d = JSON.parse(JSON.stringify(data));
-      // let toReturn;
-      // let toReturn = "";
       for (var i = 0; i < d.captionTracks.length; i++) {
         if(d.captionTracks[i]['vssId'] === req.query.q) {
           toReturn = d.captionTracks[i]['script'];
         }
-        // else {
-        //  toReturn = null;
-        // }
       }      
 
-
-      
-
       if(toReturn != null) {
-
-
-        // toReturn = toReturn.toString().replace(/\"/g, "");
-        // toReturn = toReturn.toString().replace(/'/g, "\'");
+        
         let dataToSend;
         // let dataToSend = "";
-        
+
+        //https://nodejs.org/api/child_process.html#child-process
+        //https://medium.com/@gkverma1094/child-process-in-nodejs-b2cd17c76830
         // spawn new child process to call the python script
-        // const python = spawn('py', ['script.py', 'hi from node js']);  //working
         const python = spawn('py', ['script.py', toReturn.toString()]);  //working, but chars are not decoded
+
+        /*********************************************************************************************************
+        // const python = spawn('py', ['script.py', 'hi from node js']);  //working
         // const python = spawn('py', ['script.py', toReturn.toString()]);  //working, but chars are not decoded
         // const python = spawn('py', ['script.py', JSON.stringify(toReturn.toString(), null, 4)]);
+        *********************************************************************************************************/
         
         // collect data from script
         python.stdout.on('data', function (data) {
          
          dataToSend = data.toString();
-         // const s = JSON.parse(JSON.stringify({data}.toString()));
-         //  dataToSend += String(data);
-         //  dataToSend = JSON.parse(JSON.stringify(data.toString()));
-         //  if (dataToSend.includes('½')) { dataToSend.replace(/½/g, "\'"); }
-         //  dataToSend = JSON.parse(JSON.stringify({data}.toString()));
-         // dataToSend = s[0][0].toString();
+         /**********************************************************************
+          const s = JSON.parse(JSON.stringify({data}.toString()));
+          dataToSend += String(data);
+          dataToSend = JSON.parse(JSON.stringify(data.toString()));
+          if (dataToSend.includes('½')) { dataToSend.replace(/½/g, "\'"); }
+          dataToSend = JSON.parse(JSON.stringify({data}.toString()));
+          dataToSend = s[0][0].toString();
+         ************************************************************************/
 
          console.log('Pipe data from python script ...');
 
@@ -345,28 +346,10 @@ exports.getParaphrase = function (req, res) {
         
         // in close event we are sure that stream from child process is closed
         python.on('close', (code) => {
-        console.log(`child process close all stdio with code ${code}`);
-               
-        // res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'}); //gives such a raw html encoding
-        res.end(dataToSend);  //gives res related encoding
-
-        // // dataToSend.replace(/ï¿½ï¿½/g, "XXXXX");
-        // // dataToSend.replace(/\u+FFFD/g, "XXXXX");
-        // // if (dataToSend.includes('½')) { dataToSend.replaceAll(/½/g, "\'"); }
-        // // let regexp = new RegExp(/.*?(ï¿½ï¿½)/);
-        // // // regexp = new RegExp(/.*?<title>(.*?)</title>.*/);  //error in formatting
-
-        // // let match = regexp.exec(dataToSend); 
-        // // if (match) {
-        // //   dataToSend.replace(regexp, "aaaaaaaaaa");
-        // // }
-        // res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'}); //gives such a raw html encoding
-        // // res.setEncoding('utf8');
-        // // res.charset = 'utf-8';
-        // res.end(dataToSend);  //gives res related encoding
-        
-        // // res.send(dataToSend);
-        
+          console.log(`child process close all stdio with code ${code}`);
+                
+          // res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'}); //gives such a raw html encoding
+          res.end(dataToSend);  //gives res related encoding        
 
         });
       
@@ -385,250 +368,7 @@ exports.getParaphrase = function (req, res) {
 };
 
 
-
-//in progress...
-// //https://medium.com/@gkverma1094/child-process-in-nodejs-b2cd17c76830
-// //search for childprocess in nodejs to see any other functions
-// exports.getParaphrase = function (req, res) {
-
-//   console.log("\nin the function getParaphrase\n")
-//   console.log("requested vssId: " + req.query.q)
-
-//   URL.findOne({ _id: req.params.id }, function (err, data) {
-//     if (err) {
-//       console.log("err at getDoc: " + err)
-//       // res.status(400).json(err);
-//       return res.redirect("/error/" + "No data found")
-//     }
-
-//     if (data) {
-      
-//       const d = JSON.parse(JSON.stringify(data));
-//       let toReturn;
-//       // let toReturn = "";
-//       for (var i = 0; i < d.captionTracks.length; i++) {
-//         if(d.captionTracks[i]['vssId'] === req.query.q) {
-//           toReturn = d.captionTracks[i]['script'];
-//         }
-//         // else {
-//         //  toReturn = null;
-//         // }
-//       }      
-
-
-//       toReturn = toReturn.replace(/\n/g, " ");
-
-//       // try {
-//       //   fs.writeFileSync('script.txt', JSON.parse(JSON.stringify(toReturn.toString())))
-//       // } catch (err) {
-//       //   console.error(err)
-//       // }
-
-//       if(toReturn != null) {
-//       // if({toReturn} != null) {
-
-//         // var largeDataSet = [];
-//         // // spawn new child process to call the python script
-//         // const python = spawn('py', ['script.py'], toReturn.toString());
-//         // // collect data from script
-//         // python.stdout.on('data', function (data) {
-//         //   console.log('Pipe data from python script ...');
-//         //   largeDataSet.push(data);
-//         // });
-//         // // in close event we are sure that stream is from child process is closed
-//         // python.on('close', (code) => {
-//         // console.log(`child process close all stdio with code ${code}`);
-//         // // send data to browser
-//         // res.send(largeDataSet.join(""))
-//         // });
-       
-//         // //https://www.npmjs.com/package/python-shell
-//         // let pyshell = new PythonShell('script.py');
-//         // // sends a message to the Python script via stdin
-//         // pyshell.send('hello');
-//         // pyshell.on('message', function (message) {
-//         //   // received a message sent from the Python script (a simple "print" statement)
-//         //   console.log(message);
-//         // });
-//         // // end the input stream and allow the process to exit
-//         // pyshell.end(function (err,code,signal) {
-//         //   if (err) throw err;
-//         //   console.log('The exit code was: ' + code);
-//         //   console.log('The exit signal was: ' + signal);
-//         //   console.log('finished');
-//         // });
-
-
-//         // /***********************************************************************
-//         // console.log(toReturn)
-//         let textParams = [];
-//         // let textParams = "hello world. hi hi";
-//         textParams = toReturn.toString();
-       
-//         // textParams.push(toReturn.toString());
-//         //  console.log("textParams.length: " + textParams.length)
-//         //  const a = Array.from(textParams);
-//         //  console.log(a);
-
-//         // console.log(textParams);
-//         // console.log(textParams[0]);
-//         // toReturn = "hello hi hi";
-//         // const textParams = toReturn;
-//         // textParams = JSON.stringify(toReturn.toString(), null, 4);
-//         var dataToSend;
-
-//         // spawn new child process to call the python script
-//         // note: on deploying web, 1st param can be one of python, py, or python3
-//         // cuz python command on localhost is py
-//         // const python = spawn('py', [__dirname + '/script.py']);
-
-//         // console.log(toReturn)
-//         // const python = spawn('python', ['./script.py']);
-       
-//         // if(toReturn.contains('\n')) {}
-//         // let textParams = toReturn.replaceAll(/\n/g, ' ');
-//         // console.log(toReturn);
-
-//         //the problem is that the 3rd parameter must be a pure string value....
-//         // req.query.q = textParams[0];
-//         // console.log(req.query.q);
-//         // const python = spawn('py',[__dirname + "/script.py"] );
-//         const python = spawn('py', [__dirname + '/script.py', toReturn] );
-//         // const python = spawn('py',[__dirname + 'script.py', JSON.stringify(toReturn.toString(), null, 4)] );
-//         // const python = spawn('py',[__dirname + "/script.py", textParams[0]] );
-//         // const python = spawn('py',[__dirname + "/script.py", toReturn.toString()] );
-//         // const python = spawn('py',[__dirname + "/script.py", toReturn[0]] );
-//         // const python = spawn('py',[__dirname + "/script.py", JSON.stringify({toReturn}.toString(), null, 4)] );
-//         // const python = spawn('py',[__dirname + "/script.py", 
-//         // "In this video, I will be showing you how to build a stock price web application in Python using the Streamlit and yfinance library. The app will be able to retrieve company information as well as the stock price data for S and P 500 companies. All of this in less than 50 lines of code."
-//       ////  JSON.stringify(toReturn.toString(), null, 4)
-//       // ] );
-        
-//         // collect data from script
-//         python.stdout.on('data', function (data) {
-//           console.log('Pipe data from python script ...');
-//           dataToSend = data.toString();
-//         });
-//           // in close event we are sure that stream from child process is closed
-//         python.on('close', (code) => {
-//           console.log(`child process close all stdio with code ${code}`);
-          
-//           // send data to browser
-//           // console.log(dataToSend)
-//           res.end(dataToSend);
-//           // res.send(dataToSend)
-//         });
-//         // ***************************************************************************/
-
-        
-//       }else {
-//         toReturn = "Please provide a valid query parameter\n" +
-//         "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
-//         "Check the vssId you want at the default info of the document:\n" +
-//         "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
-//         "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
-//         res.end(toReturn);
-//       }
-     
-//     } 
-//   }).lean();
-
-//    //https://medium.com/swlh/run-python-script-from-node-js-and-send-data-to-browser-15677fcf199f
-//   //https://javascript.plainenglish.io/how-to-run-python-script-using-node-js-6b351169e916
-//   // var dataToSend;
-
-//   // // spawn new child process to call the python script
-//   // // note: on deploying web, 1st param can be one of python, py, or python3
-//   // // cuz python command on localhost is py
-//   // // const python = spawn('py', [__dirname + '/script.py']);
-
-//   // // const python = spawn('python', ['./script.py']);
-//   // const python = spawn('py',[__dirname + "/script.py", req.query.q] );
-  
-//   // // collect data from script
-//   // python.stdout.on('data', function (data) {
-//   //   console.log('Pipe data from python script ...');
-//   //   dataToSend = data.toString();
-//   // });
-//   //   // in close event we are sure that stream from child process is closed
-//   // python.on('close', (code) => {
-//   //   console.log(`child process close all stdio with code ${code}`);
-    
-//   //   // send data to browser
-//   //   console.log(dataToSend)
-//   //   res.send(dataToSend)
-//   // });
-
-//   // //https://www.geeksforgeeks.org/run-python-script-node-js-using-child-process-spawn-method/
-//   // // Use child_process.spawn method from 
-//   //   // child_process module and assign it
-//   //   // to variable spawn
-//   //   var spawn = require("child_process").spawn;
-      
-//   //   // Parameters passed in spawn -
-//   //   // 1. type_of_script
-//   //   // 2. list containing Path of the script
-//   //   //    and arguments for the script 
-      
-//   //   // E.g : http://localhost:3000/name?firstname=Mike&lastname=Will
-//   //   // so, first name = Mike and last name = Will
-//   //   var process = spawn('python',["./script.py",
-//   //                           req.query.f,
-//   //                           req.query.l] );
-  
-//   //   // Takes stdout data from script which executed
-//   //   // with arguments and send this data to res object
-//   //   process.stdout.on('data', function(data) {
-//   //       res.send(data.toString());
-//   //   } )
-
-
-
-//   // //https://www.npmjs.com/package/python-shell
-
-//   // let options = {
-//   //   mode: 'text',
-//   //   pythonPath: '',
-//   //   pythonOptions: ['-u'], // get print results in real-time
-//   //   scriptPath: 'path',
-//   //   // args: ['arg1', 'arg2']
-//   // };
-
-//   // PythonShell.run('script.py', options, function (err) {
-//   //   if (err) throw err;
-//   //   console.log('finished');
-//   // });
-// };
-
-/***********************************************************************
-//it's thought that this endpoint is not really necessary for API.
-//wep app that interacts with the API can have it instead.
-exports.postDocByForm = function (req, res) {
-
-  // let url = JSON.parse(JSON.stringify(req.query.url));
-  console.log(req.query.url);
-
-  //redirect to full response
-  res.redirect("/ytt/api?url=" + req.query.url + "&full=true"); 
-
-};
-*************************************************************************/
-
 exports.postDoc = function (req, res) {
-
-  //prototype
-  // const url = JSON.parse(JSON.stringify(req.body.url));
-  // console.log("console.log(url) at POST: " + url);
-
-  //only one query 
-  // console.log("\nconsole.log(req.query.q) at POST: " + req.query.q);
-  // const url = JSON.parse(JSON.stringify(req.query.q));
-  // console.log("console.log(url) at POST: " + url);
-
-  //1st q = youtube video url
-  //2nd q = -full or undefined
-  // const url = JSON.parse(JSON.stringify(req.query.q));
-  // console.log("console.log(url) at POST: " + url);
 
   //https://stackoverflow.com/questions/39530988/getting-request-query-parameters-count
   //https://www.codegrepper.com/code-examples/javascript/req+query+params+express   //https://(www)?(\.)?(m\.)?youtu.*
