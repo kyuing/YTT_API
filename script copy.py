@@ -10,7 +10,12 @@
 # cmnd setx PATH “%PATH%;C:\Users\HP\AppData\Local\Programs\Python\Python39\Scripts”
 import sys
 import json
-context = sys.argv[1]
+# context = sys.argv[1]
+
+# in testing of:
+# http://localhost:5500/ytt/api/61cc9aaeb06a67579ff4a7f8/script?q=.en
+# http://localhost:5500/ytt/api/61cc9aaeb06a67579ff4a7f8/paraphrase?q=.en
+context = "No smiles today, Written by Cheryl, Rao Shanti and arun were good friends They had so much fun together. They shared secrets in class They ran races on the way home Chandi was always cheerful One day Shanti walked into the classroom slowly Her head was bent down She looked sad Did someone scold you? Asked Arun. Chandi shook her head She sat down and did not look up She did not answer present when Miss Sona called her name Miss Sona called again Louder this time Chandi Kumari Shanthi raised her hand Do you have a sore throat? her teacher asked Shanthi shook her head Her cheeks were red and it looked like she had a fever Are you feeling okay? Miss Sona asked Shanthi Nodded Still not daring to look up Why does Shakti look so Sad? Is your little brother okay? Is your puppy okay? Is your grandmother okay? Shanti kept nodding her head to each of her friends. She did not look up a Arun wanted to make her smile he had an idea he took out something from his bag as He ran to show it to Shanti he slipped out of his hand Shanthi saw something flying towards her and she grabbed it It was a big green rubber frog Shanti's eyes Flew open.  She opened her mouth to laugh. Thats when Arun and her friends saw why she had not smiled or talked all day! Four of her front teeth were missing "
 
 import torch
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer
@@ -32,6 +37,8 @@ def get_response(input_text,num_return_sequences):
   batch = tokenizer.prepare_seq2seq_batch([input_text],truncation=True,padding='longest',max_length=60, return_tensors="pt").to(torch_device)
   translated = model.generate(**batch,max_length=60,num_beams=10, num_return_sequences=num_return_sequences, temperature=1.5)
   tgt_text = tokenizer.batch_decode(translated, skip_special_tokens=True)
+
+  # print(tgt_text)
   return tgt_text
 
 # Do a for loop to iterate through the list of sentences and paraphrase each sentence in the iteration

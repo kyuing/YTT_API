@@ -187,12 +187,20 @@ exports.getScript = function (req, res) {
 
         
       }else {
+        // toReturn = "Please provide a valid query parameter\n" +
+        // "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+        // "Check the vssId you want at the default info of the document:\n" +
+        // "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
+        // "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
+        // res.end(toReturn);
+
         toReturn = "Please provide a valid query parameter\n" +
-        "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+        "e.g. " + __dirname + "/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
         "Check the vssId you want at the default info of the document:\n" +
-        "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
-        "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
+        "at " + __dirname + "/ytt/api/" + d._id + "\n" + 
+        "or at " + __dirname + "/ytt/api/" + d._id + "?full=true";
         res.end(toReturn);
+        
       }
      
     } 
@@ -314,32 +322,17 @@ exports.getParaphrase = function (req, res) {
       if(toReturn != null) {
         
         let dataToSend;
-        // let dataToSend = "";
 
         //https://nodejs.org/api/child_process.html#child-process
         //https://medium.com/@gkverma1094/child-process-in-nodejs-b2cd17c76830
         // spawn new child process to call the python script
         const python = spawn('py', ['script.py', toReturn.toString()]);  //working, but chars are not decoded
 
-        /*********************************************************************************************************
-        // const python = spawn('py', ['script.py', 'hi from node js']);  //working
-        // const python = spawn('py', ['script.py', toReturn.toString()]);  //working, but chars are not decoded
-        // const python = spawn('py', ['script.py', JSON.stringify(toReturn.toString(), null, 4)]);
-        *********************************************************************************************************/
         
         // collect data from script
         python.stdout.on('data', function (data) {
          
          dataToSend = data.toString();
-         /**********************************************************************
-          const s = JSON.parse(JSON.stringify({data}.toString()));
-          dataToSend += String(data);
-          dataToSend = JSON.parse(JSON.stringify(data.toString()));
-          if (dataToSend.includes('½')) { dataToSend.replace(/½/g, "\'"); }
-          dataToSend = JSON.parse(JSON.stringify({data}.toString()));
-          dataToSend = s[0][0].toString();
-         ************************************************************************/
-
          console.log('Pipe data from python script ...');
 
         });
