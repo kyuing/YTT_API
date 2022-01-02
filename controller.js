@@ -194,11 +194,18 @@ exports.getScript = function (req, res) {
         // "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
         // res.end(toReturn);
 
+        // toReturn = "Please provide a valid query parameter\n" +
+        // "e.g. " + __dirname + "/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+        // "Check the vssId you want at the default info of the document:\n" +
+        // "at " + __dirname + "/ytt/api/" + d._id + "\n" + 
+        // "or at " + __dirname + "/ytt/api/" + d._id + "?full=true";
+        // res.end(toReturn);
+
         toReturn = "Please provide a valid query parameter\n" +
-        "e.g. " + __dirname + "/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+        "e.g. " + "https://ytt-api.herokuapp.com/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
         "Check the vssId you want at the default info of the document:\n" +
-        "at " + __dirname + "/ytt/api/" + d._id + "\n" + 
-        "or at " + __dirname + "/ytt/api/" + d._id + "?full=true";
+        "at " + "https://ytt-api.herokuapp.com/ytt/api/" + d._id + "\n" + 
+        "or at "  + "https://ytt-api.herokuapp.com/ytt/api/" + d._id + "?full=true";
         res.end(toReturn);
         
       }
