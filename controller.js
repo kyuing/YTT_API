@@ -194,13 +194,6 @@ exports.getScript = function (req, res) {
         // "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
         // res.end(toReturn);
 
-        // toReturn = "Please provide a valid query parameter\n" +
-        // "e.g. " + __dirname + "/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
-        // "Check the vssId you want at the default info of the document:\n" +
-        // "at " + __dirname + "/ytt/api/" + d._id + "\n" + 
-        // "or at " + __dirname + "/ytt/api/" + d._id + "?full=true";
-        // res.end(toReturn);
-
         toReturn = "Please provide a valid query parameter\n" +
         "e.g. " + "https://ytt-api.herokuapp.com/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
         "Check the vssId you want at the default info of the document:\n" +
@@ -270,8 +263,7 @@ exports.getAvailableLang = function (req, res) {
 
 };
 
-//since getDocs function is not in the main use, alerting is not implemented here.
-//if necessary to implement alert in relation to error or no data at getDocs, refer to the function getDoc 
+//since getDocs function is not in the main use, just return full JSON of the collection
 exports.getDocs = function (req, res) {
 
   // let toReturn = "";
@@ -355,11 +347,18 @@ exports.getParaphrase = function (req, res) {
       
         
       }else {
+        // toReturn = "Please provide a valid query parameter\n" +
+        // "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+        // "Check the vssId you want at the default info of the document:\n" +
+        // "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
+        // "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
+        // res.end(toReturn);
+
         toReturn = "Please provide a valid query parameter\n" +
-        "e.g. http://localhost:5500/ytt/api/" + d._id + "/script?q=a valid vssId\n\n" +
+        "e.g. " + "https://ytt-api.herokuapp.com/ytt/api/" + d._id + "/paraphrase?q=a valid vssId\n\n" +
         "Check the vssId you want at the default info of the document:\n" +
-        "at http://localhost:5500/ytt/api/" + d._id + "\n" + 
-        "or at http://localhost:5500/ytt/api/" + d._id + "?full=true";
+        "at " + "https://ytt-api.herokuapp.com/ytt/api/" + d._id + "\n" + 
+        "or at "  + "https://ytt-api.herokuapp.com/ytt/api/" + d._id + "?full=true";
         res.end(toReturn);
       }
      
@@ -370,10 +369,6 @@ exports.getParaphrase = function (req, res) {
 
 exports.postDoc = function (req, res) {
 
-  //https://stackoverflow.com/questions/39530988/getting-request-query-parameters-count
-  //https://www.codegrepper.com/code-examples/javascript/req+query+params+express   //https://(www)?(\.)?(m\.)?youtu.*
-  // console.log(Object.keys(req.query.q).length);  //works but it's just better to use each of specific q names
-  //however, you need url validation using regex e.g. https://www.w3schools.com/jsref/jsref_match.asp
 
   // console.log("req.body.full: " + req.body.full)
 
@@ -457,11 +452,6 @@ exports.postDoc = function (req, res) {
 
           regexp = new RegExp(/playerCaptionsTracklistRenderer.*?(youtube.com\/api\/timedtext.*?)]/);
           match = regexp.exec(html);
-
-          //here, you can put the legacy regexp code that extracts the first matching timedtext url only
-          //so that you can give users at least one transcript in case error is.
-          //implement it after most of things are done or when having spare time.
-          //but not really necessary for now.
 
           if (!match) {
             console.log("msg at postDoc: No captions found");
