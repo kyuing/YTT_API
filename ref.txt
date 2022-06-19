@@ -25,7 +25,7 @@ https://www.youtube.com/watch?v=EAyo3_zJj5c
 https://www.youtube.com/watch?v=oLb5ZxQXJkU
 https://www.youtube.com/watch?v=TE66McLMMEw
 
-120622 https://ytt-v2.herokuapp.com/
+120622 190622 web app error at https://ytt-v2.herokuapp.com/
 Application error
 An error occurred in the application and your page could not be served. If you are the application owner, check your logs for details. You can do this from the Heroku CLI with the command
 heroku logs --tail
